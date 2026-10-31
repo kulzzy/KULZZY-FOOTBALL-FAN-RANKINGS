@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#06122a">
 <title>Kulzzy Football Fan Rankings</title>
 
@@ -13,17 +13,12 @@
     --gold: #ffd700;
     --white: #ffffff;
     --muted: #b8c5da;
-    --green: #20c878;
     --border: rgba(255,215,0,.35);
 }
 
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html {
-    scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
     margin: 0;
@@ -74,18 +69,9 @@ h2 {
     margin: 0 0 13px;
 }
 
-h3 {
-    margin: 0 0 8px;
-}
+button, select { font: inherit; }
 
-button,
-select {
-    font: inherit;
-}
-
-button {
-    cursor: pointer;
-}
+button { cursor: pointer; }
 
 button:disabled {
     opacity: .55;
@@ -170,18 +156,12 @@ button:disabled {
 }
 
 @keyframes sponsorContinuousScroll {
-    from {
-        transform: translateX(0);
-    }
-    to {
-        transform: translateX(-50%);
-    }
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .sponsor-track.is-scrolling {
-        animation: none;
-    }
+    .sponsor-track.is-scrolling { animation: none; }
 }
 
 /* VOTING */
@@ -197,13 +177,8 @@ button:disabled {
     overflow-wrap: anywhere;
 }
 
-.status.success {
-    color: #7ff0b5;
-}
-
-.status.error {
-    color: #ffaaaa;
-}
+.status.success { color: #7ff0b5; }
+.status.error { color: #ffaaaa; }
 
 .club-select {
     width: 100%;
@@ -243,6 +218,38 @@ button:disabled {
     margin: 10px 0 0;
 }
 
+/* SELECTED CLUB PREVIEW */
+
+.selected-club-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    padding: 10px;
+    margin: 0 0 12px;
+    border: 1px solid rgba(255,215,0,.25);
+    border-radius: 10px;
+    background: rgba(255,255,255,.035);
+}
+
+.selected-club-preview .club-logo {
+    width: 48px;
+    height: 48px;
+    flex-basis: 48px;
+}
+
+.preview-name {
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+.preview-country {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 4px;
+}
+
 /* TOP THREE */
 
 .top-three {
@@ -280,7 +287,7 @@ button:disabled {
 }
 
 .top-card.first {
-    border-color: #ffd700;
+    border-color: var(--gold);
     background: rgba(255,215,0,.09);
 }
 
@@ -291,7 +298,7 @@ button:disabled {
     padding: 14px 4px;
 }
 
-/* CLUB DIRECTORY AND LEADERBOARD */
+/* CLUB DIRECTORY */
 
 .list {
     display: flex;
@@ -299,8 +306,7 @@ button:disabled {
     gap: 9px;
 }
 
-.club-row,
-.history-row {
+.club-row, .history-row {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -310,9 +316,7 @@ button:disabled {
     border: 1px solid rgba(255,255,255,.07);
 }
 
-.club-row {
-    cursor: pointer;
-}
+.club-row { cursor: pointer; }
 
 .club-row.selected {
     border-color: var(--gold);
@@ -323,10 +327,19 @@ button:disabled {
     width: 42px;
     height: 42px;
     flex: 0 0 42px;
-    border-radius: 50%;
+    border-radius: 10px;
     object-fit: contain;
     background: #fff;
-    padding: 3px;
+    padding: 4px;
+}
+
+.club-logo-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111;
+    background: #fff;
+    font-size: 22px;
 }
 
 .club-info {
@@ -347,32 +360,11 @@ button:disabled {
     margin-top: 4px;
 }
 
-.row-number {
-    color: var(--gold);
-    font-weight: bold;
-    min-width: 24px;
-}
-
 .vote-count {
     color: var(--gold);
     font-weight: bold;
     font-size: 13px;
     white-space: nowrap;
-}
-
-.progress {
-    width: 100%;
-    height: 5px;
-    border-radius: 5px;
-    background: rgba(255,255,255,.1);
-    margin-top: 7px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    background: var(--gold);
-    border-radius: 5px;
 }
 
 /* HISTORY */
@@ -396,21 +388,10 @@ footer {
 }
 
 @media (max-width: 380px) {
-    main {
-        padding: 8px;
-    }
-
-    .panel {
-        padding: 11px;
-    }
-
-    .top-three {
-        gap: 5px;
-    }
-
-    .top-card {
-        padding: 10px 3px;
-    }
+    main { padding: 8px; }
+    .panel { padding: 11px; }
+    .top-three { gap: 5px; }
+    .top-card { padding: 10px 3px; }
 }
 </style>
 </head>
@@ -424,7 +405,6 @@ footer {
 
 <main>
 
-    <!-- SPONSORS AT THE TOP -->
     <section class="sponsor-section">
         <h2>🤝 OFFICIAL SPONSORS</h2>
         <div class="sponsor-slider">
@@ -434,7 +414,6 @@ footer {
         </div>
     </section>
 
-    <!-- VOTE -->
     <section class="panel">
         <h2>🗳️ Cast Your Vote</h2>
 
@@ -447,6 +426,10 @@ footer {
             <option value="">Loading football clubs...</option>
         </select>
 
+        <div id="selectedClubPreview" class="selected-club-preview">
+            <span class="empty-message">Select a club to preview its badge.</span>
+        </div>
+
         <button id="voteButton" class="primary-button" disabled>
             VOTE FOR MY CLUB
         </button>
@@ -456,7 +439,6 @@ footer {
         </p>
     </section>
 
-    <!-- TOP THREE -->
     <section class="panel">
         <h2>🏆 Top Three Clubs Today</h2>
         <div id="topThree" class="top-three">
@@ -464,23 +446,17 @@ footer {
         </div>
     </section>
 
-    <!-- LEADERBOARD -->
     <section class="panel">
-        <h2>📊 Today's Leaderboard</h2>
-        <div id="leaderboard" class="list">
-            <div class="empty-message">Loading clubs...</div>
-        </div>
-    </section>
-
-    <!-- ALL CLUBS -->
-    <section class="panel">
-        <h2>⚽ Choose a Club</h2>
+        <h2>🌍 Global Football Club Directory</h2>
+        <p class="vote-note">
+            Explore men's and women's football clubs from around the world.
+            Select a club to see its badge and vote for it.
+        </p>
         <div id="clubDirectory" class="list">
             <div class="empty-message">Loading football clubs...</div>
         </div>
     </section>
 
-    <!-- HISTORY -->
     <section class="panel">
         <h2>📅 Previous Results</h2>
         <div id="history">
@@ -501,8 +477,6 @@ footer {
 <script>
 "use strict";
 
-/* FIREBASE CONFIGURATION */
-
 const firebaseConfig = {
     apiKey: "AIzaSyDS_m5jMk1iQgHIo14S9_sTxnmUrKE9qIo",
     authDomain: "kulzzy-football-fan-rankings.firebaseapp.com",
@@ -519,8 +493,6 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-/* APPLICATION STATE */
-
 let currentUser = null;
 let clubs = {};
 let sponsors = {};
@@ -536,8 +508,6 @@ let todayVotesRef = null;
 let historyRef = null;
 
 const $ = id => document.getElementById(id);
-
-/* SAFE HTML */
 
 function escapeHTML(value) {
     return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -559,8 +529,6 @@ function safeURL(value) {
     } catch (e) {}
     return "";
 }
-
-/* WEST AFRICA TIME */
 
 function getWATDayKey() {
     const parts = new Intl.DateTimeFormat("en-CA", {
@@ -593,15 +561,11 @@ function displayDate(key) {
     });
 }
 
-/* STATUS */
-
 function setStatus(message, type = "") {
     const element = $("connectionStatus");
     element.textContent = message;
     element.className = "status" + (type ? " " + type : "");
 }
-
-/* CLUB DATA SUPPORT */
 
 function normalizeClubs(data) {
     const result = {};
@@ -617,8 +581,11 @@ function normalizeClubs(data) {
         result[id] = {
             id,
             name: String(name),
-            logo: value.logo || value.image || value.badge || "",
-            country: value.country || "",
+            logo: value.logo || value.logoUrl || value.image ||
+                  value.imageUrl || value.badge || value.badgeUrl ||
+                  value.crest || "",
+            country: value.country || value.countryName || "",
+            clubType: value.clubType || value.gender || "",
             active: value.active !== false && value.disabled !== true
         };
     });
@@ -655,7 +622,6 @@ function getClubVotes() {
 function renderClubSelect() {
     const select = $("clubSelect");
     const activeClubs = getActiveClubs();
-
     const previousValue = selectedClubId || select.value;
 
     select.innerHTML = '<option value="">Choose a football club</option>';
@@ -663,7 +629,8 @@ function renderClubSelect() {
     activeClubs.forEach(club => {
         const option = document.createElement("option");
         option.value = club.id;
-        option.textContent = club.name;
+        option.textContent =
+            club.name + (club.country ? " — " + club.country : "");
         select.appendChild(option);
     });
 
@@ -675,12 +642,17 @@ function renderClubSelect() {
         selectedClubId = "";
     }
 
+    renderSelectedClubPreview();
     updateVoteButton();
 }
 
 function updateVoteButton() {
     const button = $("voteButton");
-    const hasSelection = Boolean(selectedClubId && clubs[selectedClubId] && clubs[selectedClubId].active);
+    const hasSelection = Boolean(
+        selectedClubId &&
+        clubs[selectedClubId] &&
+        clubs[selectedClubId].active
+    );
 
     button.disabled = !currentUser || !hasSelection || voteInProgress;
 
@@ -695,23 +667,59 @@ function updateVoteButton() {
 
 $("clubSelect").addEventListener("change", event => {
     selectedClubId = event.target.value;
+    renderSelectedClubPreview();
     renderDirectory();
     updateVoteButton();
 });
 
-/* CLUB LOGO */
+/* CLUB LOGOS */
 
 function logoHTML(club, className = "club-logo") {
     const logo = safeURL(club.logo);
 
     if (logo) {
         return '<img class="' + className + '" src="' +
-            escapeHTML(logo) + '" alt="" loading="lazy" ' +
-            'onerror="this.style.display=\'none\'">';
+            escapeHTML(logo) + '" alt="' +
+            escapeHTML(club.name || "Football club") +
+            ' logo" loading="lazy" onerror="handleLogoError(this)">';
     }
 
-    return '<div class="' + className + '" ' +
-        'style="display:flex;align-items:center;justify-content:center;color:#111;font-size:20px;">⚽</div>';
+    return '<div class="' + className +
+        ' club-logo-fallback" role="img" aria-label="Football club badge unavailable">⚽</div>';
+}
+
+function handleLogoError(image) {
+    if (!image) return;
+
+    const replacement = document.createElement("div");
+    replacement.className = image.className + " club-logo-fallback";
+    replacement.setAttribute("role", "img");
+    replacement.setAttribute("aria-label", "Football club badge unavailable");
+    replacement.textContent = "⚽";
+
+    image.replaceWith(replacement);
+}
+
+function renderSelectedClubPreview() {
+    const container = $("selectedClubPreview");
+    const club = clubs[selectedClubId];
+
+    if (!club || !club.active) {
+        container.innerHTML =
+            '<span class="empty-message">Select a club to preview its badge.</span>';
+        return;
+    }
+
+    container.innerHTML =
+        logoHTML(club) +
+        '<div><div class="preview-name">' + escapeHTML(club.name) + '</div>' +
+        (club.country
+            ? '<small class="preview-country">' + escapeHTML(club.country) + '</small>'
+            : '') +
+        (club.clubType
+            ? '<small class="preview-country">' + escapeHTML(club.clubType) + '</small>'
+            : '') +
+        '</div>';
 }
 
 /* TOP THREE */
@@ -726,7 +734,8 @@ function renderTopThree() {
     ).slice(0, 3);
 
     if (!ranked.length) {
-        container.innerHTML = '<div class="empty-message">Football clubs will appear here.</div>';
+        container.innerHTML =
+            '<div class="empty-message">Football clubs will appear here.</div>';
         return;
     }
 
@@ -737,52 +746,12 @@ function renderTopThree() {
             <span class="medal">${medals[index]}</span>
             ${logoHTML(club)}
             <div class="club-name">${escapeHTML(club.name)}</div>
+            ${club.country
+                ? `<div class="preview-country">${escapeHTML(club.country)}</div>`
+                : ""}
             <div class="vote-count">${totals[club.id] || 0} votes</div>
         </div>
     `).join("");
-}
-
-/* LEADERBOARD */
-
-function renderLeaderboard() {
-    const container = $("leaderboard");
-    const totals = getClubVotes();
-
-    const ranked = getActiveClubs().sort((a, b) =>
-        (totals[b.id] || 0) - (totals[a.id] || 0) ||
-        a.name.localeCompare(b.name)
-    );
-
-    if (!ranked.length) {
-        container.innerHTML = '<div class="empty-message">No clubs have been published yet.</div>';
-        return;
-    }
-
-    const maxVotes = Math.max(1, ...ranked.map(club => totals[club.id] || 0));
-
-    container.innerHTML = ranked.map((club, index) => {
-        const count = totals[club.id] || 0;
-        const width = Math.max(0, Math.min(100, count / maxVotes * 100));
-
-        return `
-            <div class="club-row ${selectedClubId === club.id ? "selected" : ""}"
-                 data-club-id="${escapeHTML(club.id)}">
-                <span class="row-number">${index + 1}</span>
-                ${logoHTML(club)}
-                <div class="club-info">
-                    <strong>${escapeHTML(club.name)}</strong>
-                    <div class="progress">
-                        <div class="progress-bar" style="width:${width}%"></div>
-                    </div>
-                </div>
-                <span class="vote-count">${count}</span>
-            </div>
-        `;
-    }).join("");
-
-    container.querySelectorAll("[data-club-id]").forEach(row => {
-        row.addEventListener("click", () => chooseClub(row.dataset.clubId));
-    });
 }
 
 /* FULL CLUB DIRECTORY */
@@ -792,7 +761,8 @@ function renderDirectory() {
     const activeClubs = getActiveClubs();
 
     if (!activeClubs.length) {
-        container.innerHTML = '<div class="empty-message">Football clubs will appear here.</div>';
+        container.innerHTML =
+            '<div class="empty-message">No clubs have been published yet.</div>';
         return;
     }
 
@@ -802,7 +772,12 @@ function renderDirectory() {
             ${logoHTML(club)}
             <div class="club-info">
                 <strong>${escapeHTML(club.name)}</strong>
-                ${club.country ? `<small>${escapeHTML(club.country)}</small>` : ""}
+                ${club.country
+                    ? `<small>${escapeHTML(club.country)}</small>`
+                    : ""}
+                ${club.clubType
+                    ? `<small>${escapeHTML(club.clubType)}</small>`
+                    : ""}
             </div>
             <button class="secondary-button" type="button">Select</button>
         </div>
@@ -819,8 +794,8 @@ function chooseClub(id) {
     selectedClubId = id;
     $("clubSelect").value = id;
 
+    renderSelectedClubPreview();
     renderDirectory();
-    renderLeaderboard();
     updateVoteButton();
 
     $("clubSelect").scrollIntoView({
@@ -829,7 +804,7 @@ function chooseClub(id) {
     });
 }
 
-/* SPONSOR SUPPORT */
+/* SPONSORS */
 
 function getSponsorItems(data) {
     if (!data || typeof data !== "object") return [];
@@ -907,37 +882,28 @@ function renderSponsors() {
         track.appendChild(createSponsorCard(sponsor));
     });
 
-    // A single sponsor stays still.
     if (sponsorsList.length < 2) return;
 
-    // Wait for the browser to calculate the original flyer width.
     requestAnimationFrame(() => {
         const originalCards = Array.from(track.children);
-
         if (originalCards.length < 2) return;
 
         const originalWidth = track.scrollWidth;
 
-        // Duplicate the entire set once for a continuous loop.
         originalCards.forEach(card => {
             const clone = card.cloneNode(true);
-
-            // Prevent duplicated images from delaying initial display.
             const img = clone.querySelector("img");
             if (img) img.loading = "eager";
-
             track.appendChild(clone);
         });
 
-        // Adjust speed based on the distance travelled.
         const seconds = Math.max(15, Math.min(45, originalWidth / 45));
-
         track.style.setProperty("--scroll-duration", seconds + "s");
         track.classList.add("is-scrolling");
     });
 }
 
-/* DAILY VOTE */
+/* DAILY VOTING */
 
 function hasVotedToday() {
     return Boolean(currentUser && todayVotes && todayVotes[currentUser.uid]);
@@ -946,17 +912,20 @@ function hasVotedToday() {
 function updateVoteStatus() {
     if (!currentUser) {
         setStatus("Connecting to the voting platform...");
-        $("voteNote").textContent = "Please wait while the voting platform connects.";
+        $("voteNote").textContent =
+            "Please wait while the voting platform connects.";
         updateVoteButton();
         return;
     }
 
     if (hasVotedToday()) {
         setStatus("✅ Your vote has been recorded for today.", "success");
-        $("voteNote").textContent = "You can vote again when the next voting day begins.";
+        $("voteNote").textContent =
+            "You can vote again when the next voting day begins.";
     } else {
         setStatus("You're ready to vote. Choose your favourite club.", "success");
-        $("voteNote").textContent = "One vote per authenticated account each day.";
+        $("voteNote").textContent =
+            "One vote per authenticated account each day.";
     }
 
     updateVoteButton();
@@ -970,7 +939,8 @@ $("voteButton").addEventListener("click", async () => {
         return;
     }
 
-    if (!selectedClubId || !clubs[selectedClubId] || !clubs[selectedClubId].active) {
+    if (!selectedClubId || !clubs[selectedClubId] ||
+        !clubs[selectedClubId].active) {
         setStatus("Please select a football club first.", "error");
         return;
     }
@@ -981,8 +951,12 @@ $("voteButton").addEventListener("click", async () => {
     }
 
     const voteDay = getWATDayKey();
+
     if (voteDay !== dayKey) {
-        setStatus("The voting day has changed. Refreshing today's results...", "error");
+        setStatus(
+            "The voting day has changed. Refreshing today's results...",
+            "error"
+        );
         await refreshDayIfNeeded();
         return;
     }
@@ -999,19 +973,25 @@ $("voteButton").addEventListener("click", async () => {
     };
 
     try {
-        const voteRef = db.ref("dailyVotes/" + dayKey + "/" + currentUser.uid);
+        const voteRef = db.ref(
+            "dailyVotes/" + dayKey + "/" + currentUser.uid
+        );
 
-        // Realtime Database rules enforce one vote per UID per day.
         await voteRef.set(vote);
-
         setStatus("✅ Your vote has been submitted!", "success");
     } catch (error) {
         console.error("Vote submission error:", error);
 
         if (error && error.code === "PERMISSION_DENIED") {
-            setStatus("Your vote was not accepted. You may have already voted today, or the club is unavailable.", "error");
+            setStatus(
+                "Your vote was not accepted. You may have already voted today, or the club is unavailable.",
+                "error"
+            );
         } else {
-            setStatus("Unable to submit your vote. Check your connection and try again.", "error");
+            setStatus(
+                "Unable to submit your vote. Check your connection and try again.",
+                "error"
+            );
         }
     } finally {
         voteInProgress = false;
@@ -1030,7 +1010,8 @@ function renderHistory() {
         .slice(0, 14);
 
     if (!days.length) {
-        container.innerHTML = '<div class="empty-message">Previous results will appear here as voting days are completed.</div>';
+        container.innerHTML =
+            '<div class="empty-message">Previous results will appear here as voting days are completed.</div>';
         return;
     }
 
@@ -1042,7 +1023,6 @@ function renderHistory() {
 
         Object.values(votes).forEach(vote => {
             if (!vote || vote.categoryId !== "club" || !vote.candidateId) return;
-
             totals[vote.candidateId] = (totals[vote.candidateId] || 0) + 1;
         });
 
@@ -1056,12 +1036,17 @@ function renderHistory() {
             html += '<div class="empty-message">No recorded votes.</div>';
         } else {
             ranked.forEach(([clubId, count], index) => {
-                const name = clubs[clubId] ? clubs[clubId].name : "Club";
+                const club = clubs[clubId];
+                const name = club ? club.name : "Club";
                 const medals = ["🥇", "🥈", "🥉"];
 
                 html += `
                     <div class="history-row">
-                        <span>${medals[index]} ${escapeHTML(name)}</span>
+                        <span>
+                            ${medals[index]}
+                            ${club ? logoHTML(club) : ""}
+                            ${escapeHTML(name)}
+                        </span>
                         <strong class="vote-count">${count} votes</strong>
                     </div>
                 `;
@@ -1090,7 +1075,7 @@ function attachListeners() {
 
         renderClubSelect();
         renderTopThree();
-        renderLeaderboard();
+        renderSelectedClubPreview();
         renderDirectory();
         renderHistory();
     }, error => {
@@ -1109,9 +1094,7 @@ function attachListeners() {
 
     todayVotesRef.on("value", snapshot => {
         todayVotes = snapshot.val() || {};
-
         renderTopThree();
-        renderLeaderboard();
         updateVoteStatus();
     }, error => {
         console.error("Today's votes loading error:", error);
@@ -1127,8 +1110,6 @@ function attachListeners() {
             '<div class="empty-message">Previous results are temporarily unavailable.</div>';
     });
 }
-
-/* NEW VOTING DAY */
 
 async function refreshDayIfNeeded() {
     const latestDay = getWATDayKey();
@@ -1166,13 +1147,9 @@ setInterval(() => {
     refreshDayIfNeeded().catch(console.error);
 }, 15000);
 
-/* CONNECTION STATE */
-
 db.ref(".info/connected").on("value", snapshot => {
     if (snapshot.val() === true) {
-        if (currentUser) {
-            updateVoteStatus();
-        }
+        if (currentUser) updateVoteStatus();
     } else {
         setStatus("Connection interrupted. Reconnecting...", "error");
     }
