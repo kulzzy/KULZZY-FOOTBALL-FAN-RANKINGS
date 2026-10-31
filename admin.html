@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#06122a">
+<title>Kulzzy Football Rankings Admin</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#06122a;color:#fff;font-family:Arial,sans-serif}
+header{text-align:center;padding:22px 12px;border-bottom:1px solid #2b4167}
+header h1{color:#ffd700;font-size:25px}
+main{max-width:760px;margin:auto;padding:14px}
+.card{background:#0d2042;border:1px solid #263c61;border-radius:14px;padding:16px;margin:14px 0}
+label{display:block;color:#ffd700;font-size:13px;margin-top:8px}
+input,select,button{width:100%;padding:12px;border-radius:9px;border:1px solid #50668b;margin:6px 0 10px;font:inherit}
+input,select{background:#07162f;color:#fff}
+button{background:#ffd700;color:#06122a;border:0;font-weight:bold;cursor:pointer}
+button.secondary{background:#203758;color:#fff}
+.small{font-size:13px;color:#bac6da;line-height:1.6}
+.status{background:#07162f;border-radius:9px;padding:12px;color:#bac6da;overflow-wrap:anywhere}
+.item{border-bottom:1px solid #314768;padding:12px 0}
+.hidden{display:none!important}
+a{color:#ffd700}
+</style>
+</head>
+<body>
+<header>
+  <div style="color:#ffd700;letter-spacing:2px;font-size:12px">KULZZY RADIO NETWORK</div>
+  <h1>FOOTBALL FAN RANKINGS</h1>
+  <p class="small">Administrator control panel</p>
+</header>
+
+<main>
+  <section class="card" id="loginBox">
+    <h2>Administrator sign in</h2>
+    <p class="small">Sign in using your Firebase administrator account.</p>
+
+    <label>Email address</label>
+    <input id="email" type="email" autocomplete="username"
+           value="dstnewz.ng@gmail.com">
+
+    <label>Password</label>
+    <input id="password" type="password" autocomplete="current-password">
+
+    <button id="loginBtn">Sign in</button>
+    <div id="loginStatus" class="status">Administrator access only.</div>
+  </section>
+
+  <div id="adminArea" class="hidden">
+
+    <section class="card">
+      <h2>Add football nominee</h2>
+
+      <label>Football category</label>
+      <select id="category"></select>
+
+      <label>Nominee name</label>
+      <input id="name" placeholder="Club, player, goalkeeper, fanbase…">
+
+      <label>Description (optional)</label>
+      <input id="description" placeholder="Country, team, position…">
+
+      <label>Photo URL (optional)</label>
+      <input id="photo" type="url" placeholder="https://...">
+
+      <button id="addBtn">Add nominee</button>
+      <div id="nomineeStatus" class="status"></div>
+      <div id="nomineeList"></div>
+    </section>
+
+    <section class="card">
+      <h2>Manage official sponsors</h2>
+      <p class="small">This section is for daily and weekly sponsorships, not paid advertising listings.</p>
+
+      <label>Sponsor name</label>
+      <input id="sponsorName" placeholder="Official sponsor name">
+
+      <label>Sponsorship type</label>
+      <select id="sponsorType">
+        <option>Daily sponsor</option>
+        <option>Weekly sponsor</option>
+      </select>
+
+      <label>Website (optional)</label>
+      <input id="sponsorLink" type="url" placeholder="https://...">
+
+      <button id="sponsorBtn">Publish sponsor</button>
+      <div id="sponsorStatus" class="status"></div>
+      <div id="sponsorList"></div>
+    </section>
+
+    <section class="card">
+      <h2>Voting policy</h2>
+      <p class="small">
+        The database rules allow one vote record per authenticated account
+        per WAT date. Anonymous accounts can be recreated, so this cannot
+        guarantee one vote per human. Stronger protection requires verified
+        voter identity and trusted server-side validation.
+      </p>
+      <button class="secondary" id="logoutBtn">Sign out</button>
+    </section>
+  </div>
+
+  <p><a href="index.html">← Return to public rankings</a></p>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<script>
+(function(){
+"use strict";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDS_m5jMk1iQgHIo14S9_sTxnmUrKE9qIo",
+  authDomain: "kulzzy-football-fan-rankings.firebaseapp.com",
+  databaseURL: "https://kulzzy-football-fan-rankings-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "kulzzy-football-fan-rankings",
+  storageBucket: "kulzzy-football-fan-rankings.firebasestorage.app",
+  messagingSenderId: "860619759967",
+  appId: "1:860619759967:web:dc033eeaa98b1fe50b96ea",
+  measurementId: "G-JH6F5RKY15"
+};
+
+const ADMIN_EMAIL = "dstnewz.ng@gmail.com";
+
+const categories = [
+  ["club","Most Loved Football Club"],
+  ["player","Fan Favourite Football Player"],
+  ["striker","Best Striker in Football"],
+  ["goalkeeper","Best Goalkeeper"],
+  ["fanbase","Most Passionate Football Fanbase"],
+  ["rivalry","Greatest Football Rivalry"],
+  ["legend","Greatest Football Legend"],
+  ["youngstar","Best Young Football Star"],
+  ["coach","Best Football Coach"],
+  ["national","Favourite National Team"],
+  ["african","Africa's Favourite Football Club"],
+  ["women","Favourite Women's Football Star"],
+  ["midfielder","Best Midfielder"],
+  ["defender","Best Defender"]
+];
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.database();
+
+function esc(value){
+  return String(value || "").replace(/[&<>"']/g,function(c){
+    return {
+      "&":"&amp;","<":"&lt;",">":"&gt;",
+      '"':"&quot;","'":"&#39;"
+    }[c];
+  });
+}
+
+function setStatus(id,message){
+  document.getElementById(id).textContent = message;
+}
+
+function isAdmin(user){
+  return !!user &&
+         !!user.email &&
+         user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+}
+
+document.getElementById("category").innerHTML = categories.map(function(c){
+  return '<option value="'+c[0]+'">'+esc(c[1])+'</option>';
+}).join("");
+
+auth.onAuthStateChanged(function(user){
+  if(isAdmin(user)){
+    document.getElementById("loginBox").classList.add("hidden");
+    document.getElementById("adminArea").classList.remove("hidden");
+    loadNominees();
+    loadSponsors();
+  }else{
+    document.getElementById("loginBox").classList.remove("hidden");
+    document.getElementById("adminArea").classList.add("hidden");
+
+    if(user){
+      auth.signOut();
+      setStatus("loginStatus","This account is not the authorized administrator.");
+    }
+  }
+});
+
+document.getElementById("loginBtn").addEventListener("click",async function(){
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  if(!email || !password){
+    setStatus("loginStatus","Enter your administrator email and password.");
+    return;
+  }
+
+  try{
+    await auth.signInWithEmailAndPassword(email,password);
+    setStatus("loginStatus","Signed in.");
+  }catch(error){
+    setStatus("loginStatus","Sign-in failed. Check the email, password and Firebase Authentication settings.");
+  }
+});
+
+document.getElementById("logoutBtn").addEventListener("click",function(){
+  auth.signOut();
+});
+
+async function loadNominees(){
+  try{
+    const snap = await db.ref("candidates").once("value");
+    const all = snap.val() || {};
+    let html = "";
+
+    categories.forEach(function(category){
+      const nominees = all[category[0]] || {};
+
+      Object.keys(nominees).forEach(function(id){
+        const nominee = nominees[id];
+
+        html += '<div class="item"><strong>'+esc(nominee.name)+'</strong>' +
+          '<br><span class="small">'+esc(category[1])+'</span>' +
+          '<button class="secondary" data-delete-nominee="'+
+          esc(category[0]+'/'+id)+'">Delete nominee</button></div>';
+      });
+    });
+
+    document.getElementById("nomineeList").innerHTML =
+      html || '<p class="small">No nominees have been added yet.</p>';
+
+    document.querySelectorAll("[data-delete-nominee]").forEach(function(button){
+      button.addEventListener("click",async function(){
+        if(!isAdmin(auth.currentUser)) return;
+
+        if(confirm("Delete this nominee?")){
+          try{
+            await db.ref("candidates/"+button.dataset.deleteNominee).remove();
+            setStatus("nomineeStatus","Nominee deleted.");
+            loadNominees();
+          }catch(error){
+            setStatus("nomineeStatus","Could not delete nominee. Check Firebase rules.");
+          }
+        }
+      });
+    });
+  }catch(error){
+    setStatus("nomineeStatus","Could not load nominees. Publish the Firebase rules first.");
+  }
+}
+
+document.getElementById("addBtn").addEventListener("click",async function(){
+  if(!isAdmin(auth.currentUser)){
+    setStatus("nomineeStatus","Administrator access required.");
+    return;
+  }
+
+  const name = document.getElementById("name").value.trim();
+  const category = document.getElementById("category").value;
+
+  if(!name){
+    setStatus("nomineeStatus","Enter the nominee name.");
+    return;
+  }
+
+  const record = {
+    name:name,
+    description:document.getElementById("description").value.trim(),
+    photo:document.getElementById("photo").value.trim(),
+    createdAt:firebase.database.ServerValue.TIMESTAMP
+  };
+
+  try{
+    await db.ref("candidates/"+category).push(record);
+    setStatus("nomineeStatus","Nominee added successfully.");
+    document.getElementById("name").value = "";
+    document.getElementById("description").value = "";
+    document.getElementById("photo").value = "";
+    loadNominees();
+  }catch(error){
+    setStatus("nomineeStatus","Could not add nominee. Check the Firebase database rules.");
+  }
+});
+
+async function loadSponsors(){
+  try{
+    const snap = await db.ref("sponsors").once("value");
+    const all = snap.val() || {};
+
+    document.getElementById("sponsorList").innerHTML =
+      Object.keys(all).map(function(id){
+        const sponsor = all[id];
+
+        return '<div class="item"><strong>'+esc(sponsor.name)+'</strong>' +
+          '<br><span class="small">'+esc(sponsor.type)+'</span>' +
+          '<button class="secondary" data-delete-sponsor="'+esc(id)+'">Remove sponsor</button></div>';
+      }).join("") || '<p class="small">No official sponsors listed yet.</p>';
+
+    document.querySelectorAll("[data-delete-sponsor]").forEach(function(button){
+      button.addEventListener("click",async function(){
+        if(!isAdmin(auth.currentUser)) return;
+
+        if(confirm("Remove this sponsor?")){
+          try{
+            await db.ref("sponsors/"+button.dataset.deleteSponsor).remove();
+            setStatus("sponsorStatus","Sponsor removed.");
+            loadSponsors();
+          }catch(error){
+            setStatus("sponsorStatus","Could not remove sponsor. Check Firebase rules.");
+          }
+        }
+      });
+    });
+  }catch(error){
+    setStatus("sponsorStatus","Could not load sponsors. Check Firebase database rules.");
+  }
+}
+
+document.getElementById("sponsorBtn").addEventListener("click",async function(){
+  if(!isAdmin(auth.currentUser)){
+    setStatus("sponsorStatus","Administrator access required.");
+    return;
+  }
+
+  const name = document.getElementById("sponsorName").value.trim();
+  const link = document.getElementById("sponsorLink").value.trim();
+
+  if(!name){
+    setStatus("sponsorStatus","Enter the sponsor name.");
+    return;
+  }
+
+  if(link && !/^https?:\/\//i.test(link)){
+    setStatus("sponsorStatus","Website must start with https:// or http://");
+    return;
+  }
+
+  try{
+    await db.ref("sponsors").push({
+      name:name,
+      type:document.getElementById("sponsorType").value,
+      link:link,
+      createdAt:firebase.database.ServerValue.TIMESTAMP
+    });
+
+    setStatus("sponsorStatus","Sponsor published successfully.");
+    document.getElementById("sponsorName").value = "";
+    document.getElementById("sponsorLink").value = "";
+    loadSponsors();
+  }catch(error){
+    setStatus("sponsorStatus","Could not publish sponsor. Check Firebase database rules.");
+  }
+});
+
+})();
+</script>
+</body>
+</html>
