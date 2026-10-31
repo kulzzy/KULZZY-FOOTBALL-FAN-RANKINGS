@@ -1,174 +1,544 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#06122a">
-<title>Kulzzy Football Rankings Admin</title>
-
-<style>
+<title>Kulzzy Football Rankings Admin</title><style>
 *{box-sizing:border-box}
-body{margin:0;background:#06122a;color:#fff;font-family:Arial,Helvetica,sans-serif}
-header{text-align:center;padding:20px 12px;border-bottom:2px solid #ffd700;background:#0b1b38}
-header h1{color:#ffd700;font-size:24px;margin:8px 0}
-main{max-width:780px;margin:auto;padding:13px}
-.card{background:#0d2042;border:1px solid #334968;border-radius:13px;padding:15px;margin:14px 0}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:#06122a;
+  color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+header{
+  text-align:center;
+  padding:20px 12px;
+  border-bottom:2px solid #ffd700;
+  background:#0b1b38;
+}
+
+header h1{
+  color:#ffd700;
+  font-size:24px;
+  margin:8px 0;
+}
+
+main{
+  max-width:850px;
+  margin:auto;
+  padding:13px;
+}
+
+.card{
+  background:#0d2042;
+  border:1px solid #334968;
+  border-radius:13px;
+  padding:15px;
+  margin:14px 0;
+}
+
 h2,h3{color:#ffd700}
-h2{font-size:20px;margin-top:0}
-h3{font-size:16px;margin-top:22px}
-label{display:block;color:#ffd700;font-size:13px;margin-top:9px}
-input,select,button{width:100%;padding:12px;border-radius:8px;margin:6px 0 10px;font:inherit}
-input,select{background:#07162f;color:#fff;border:1px solid #50668b}
-button{border:0;background:#ffd700;color:#06122a;font-weight:bold;cursor:pointer}
-button.secondary{background:#243b5c;color:#fff;border:1px solid #587092}
-button.danger{background:#8c2431;color:#fff}
-button:disabled{opacity:.55;cursor:wait}
-.small{font-size:13px;color:#bac6da;line-height:1.6}
-.status{background:#07162f;padding:11px;border-radius:8px;font-size:13px;line-height:1.5;white-space:pre-line;overflow-wrap:anywhere;color:#bac6da}
+
+h2{
+  font-size:20px;
+  margin-top:0;
+}
+
+h3{
+  font-size:16px;
+  margin-top:22px;
+}
+
+label{
+  display:block;
+  color:#ffd700;
+  font-size:13px;
+  margin-top:9px;
+}
+
+input,button{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  margin:6px 0 10px;
+  font:inherit;
+}
+
+input{
+  background:#07162f;
+  color:#fff;
+  border:1px solid #50668b;
+}
+
+button{
+  border:0;
+  background:#ffd700;
+  color:#06122a;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button.secondary{
+  background:#243b5c;
+  color:#fff;
+  border:1px solid #587092;
+}
+
+button.danger{
+  background:#8c2431;
+  color:#fff;
+}
+
+button:disabled{
+  opacity:.55;
+  cursor:wait;
+}
+
+.small{
+  font-size:13px;
+  color:#bac6da;
+  line-height:1.6;
+}
+
+.status{
+  background:#07162f;
+  padding:11px;
+  border-radius:8px;
+  font-size:13px;
+  line-height:1.5;
+  white-space:pre-line;
+  overflow-wrap:anywhere;
+  color:#bac6da;
+  margin-top:8px;
+}
+
 .hidden{display:none!important}
+
 a{color:#ffd700}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.row button{flex:1;min-width:130px}
-.item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #314768}
-.item img,.club-placeholder{width:46px;height:46px;flex:0 0 46px;object-fit:contain;background:#fff;color:#111;border-radius:8px;padding:3px}
-.club-placeholder{display:flex;align-items:center;justify-content:center;font-size:24px}
-.item-info{flex:1;min-width:0;overflow-wrap:anywhere}
-.item-info strong{display:block}
-.item-info small{display:block;color:#bac6da;margin-top:4px}
-.item-actions{display:flex;flex-direction:column;gap:5px;min-width:85px}
-.item-actions button{padding:8px 6px;margin:0;font-size:12px}
-.count{color:#ffd700;font-weight:bold}
-.preview{display:flex;align-items:center;gap:12px;margin:10px 0;padding:10px;background:#07162f;border-radius:9px;min-height:68px}
-.preview img,.preview .club-placeholder{width:52px;height:52px;flex:0 0 52px;object-fit:contain;background:#fff;color:#111;border-radius:8px;padding:3px}
-.preview-text{font-size:13px;overflow-wrap:anywhere}
-@media(max-width:390px){
+
+.row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.row button{
+  flex:1;
+  min-width:130px;
+}
+
+.count{
+  color:#ffd700;
+  font-weight:bold;
+}
+
+/* CLUB LIST: SHOW APPROXIMATELY FOUR CLUBS, SCROLL INSIDE */
+.club-list{
+  height:330px;
+  max-height:45vh;
+  min-height:250px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  border:1px solid #334968;
+  border-radius:10px;
+  background:#07162f;
+  padding:0 10px;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:#ffd700 #07162f;
+}
+
+.club-list::-webkit-scrollbar,
+.import-results::-webkit-scrollbar{
+  width:7px;
+}
+
+.club-list::-webkit-scrollbar-thumb,
+.import-results::-webkit-scrollbar-thumb{
+  background:#ffd700;
+  border-radius:10px;
+}
+
+.item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 0;
+  border-bottom:1px solid #314768;
+  min-height:74px;
+}
+
+.item:last-child{border-bottom:0}
+
+.item img,
+.club-placeholder{
+  width:44px;
+  height:44px;
+  flex:0 0 44px;
+  object-fit:contain;
+  background:#fff;
+  color:#111;
+  border-radius:8px;
+  padding:3px;
+}
+
+.club-placeholder{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:23px;
+}
+
+.item-info{
+  flex:1;
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+
+.item-info strong{
+  display:block;
+  line-height:1.35;
+}
+
+.item-info small{
+  display:block;
+  color:#bac6da;
+  margin-top:4px;
+}
+
+.item-actions{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  min-width:72px;
+}
+
+.item-actions button{
+  padding:8px 5px;
+  margin:0;
+  font-size:12px;
+}
+
+.preview{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:10px 0;
+  padding:10px;
+  background:#07162f;
+  border-radius:9px;
+  min-height:68px;
+}
+
+.preview img,
+.preview .club-placeholder{
+  width:52px;
+  height:52px;
+  flex:0 0 52px;
+  object-fit:contain;
+  background:#fff;
+  color:#111;
+  border-radius:8px;
+  padding:3px;
+}
+
+.preview-text{
+  font-size:13px;
+  overflow-wrap:anywhere;
+}
+
+/* WORLDWIDE IMPORT RESULTS */
+.import-results{
+  height:280px;
+  max-height:40vh;
+  overflow-y:auto;
+  overflow-x:hidden;
+  border:1px solid #334968;
+  border-radius:10px;
+  background:#07162f;
+  padding:0 10px;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:#ffd700 #07162f;
+}
+
+.import-result{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:9px 0;
+  border-bottom:1px solid #314768;
+}
+
+.import-result img,
+.import-result .club-placeholder{
+  width:38px;
+  height:38px;
+  flex:0 0 38px;
+  object-fit:contain;
+  background:#fff;
+  color:#111;
+  border-radius:7px;
+  padding:3px;
+}
+
+.import-result-info{
+  flex:1;
+  min-width:0;
+  overflow-wrap:anywhere;
+  font-size:13px;
+}
+
+.import-result-info small{
+  display:block;
+  color:#bac6da;
+  margin-top:4px;
+}
+
+.import-result button{
+  width:auto;
+  min-width:70px;
+  margin:0;
+  padding:9px 8px;
+  font-size:12px;
+}
+
+.section-note{
+  border-left:3px solid #ffd700;
+  padding:8px 10px;
+  background:#07162f;
+  color:#bac6da;
+  font-size:12px;
+  line-height:1.6;
+  margin:10px 0;
+}
+
+@media(max-width:420px){
   main{padding:8px}
   .card{padding:11px}
+  header h1{font-size:21px}
   .item{gap:7px}
-  .item img,.club-placeholder{width:38px;height:38px;flex-basis:38px}
-  .item-actions{min-width:72px}
+  .item img,.club-placeholder{
+    width:38px;
+    height:38px;
+    flex-basis:38px;
+  }
+  .item-actions{min-width:65px}
+  .item-actions button{font-size:11px}
+  .club-list{height:315px}
 }
-</style>
-</head>
-
-<body>
-<header>
-  <div style="color:#ffd700;font-size:12px;letter-spacing:2px">KULZZY RADIO NETWORK</div>
+</style></head><body><header>
+  <div style="color:#ffd700;font-size:12px;letter-spacing:2px">
+    KULZZY RADIO NETWORK
+  </div>
   <h1>FOOTBALL FAN RANKINGS</h1>
   <p class="small">Administrator Control Panel</p>
-</header>
-
-<main>
-  <section class="card" id="loginBox">
+</header><main>  <!-- ADMIN LOGIN -->  <section class="card" id="loginBox">
     <h2>Administrator Sign In</h2>
-    <p class="small">Sign in using your authorized Firebase administrator account.</p>
+    <p class="small">
+      Sign in using your authorized Firebase administrator account.
+    </p><label for="email">Email address</label>
+<input
+  id="email"
+  type="email"
+  autocomplete="username"
+  value="dstnewz.ng@gmail.com"
+>
 
-    <label for="email">Email address</label>
-    <input id="email" type="email" autocomplete="username" value="dstnewz.ng@gmail.com">
+<label for="password">Password</label>
+<input
+  id="password"
+  type="password"
+  autocomplete="current-password"
+>
 
-    <label for="password">Password</label>
-    <input id="password" type="password" autocomplete="current-password">
+<button id="loginBtn">Sign In</button>
+<div id="loginStatus" class="status">
+  Administrator access only.
+</div>
 
-    <button id="loginBtn">Sign In</button>
-    <div id="loginStatus" class="status">Administrator access only.</div>
-  </section>
+  </section>  <div id="adminArea" class="hidden"><!-- CLUB ADD AND UPDATE FORM -->
+<section class="card">
 
-  <div id="adminArea" class="hidden">
-    <section class="card">
-      <div class="small">PERMANENT VOTING CATEGORY</div>
-      <h2>⚽ MOST LOVED FOOTBALL CLUB OF TODAY</h2>
-      <p class="small">
-        Add clubs or edit their details below. Logo URLs should point directly
-        to an image file or an image URL that can be opened publicly.
-        Updating a club does not delete its voting records.
-      </p>
+  <div class="small">PERMANENT VOTING CATEGORY</div>
 
-      <h3 id="formHeading">Add a Football Club</h3>
+  <h2>⚽ MOST LOVED FOOTBALL CLUB OF TODAY</h2>
 
-      <label for="clubName">Official club name *</label>
-      <input id="clubName" placeholder="e.g. Arsenal FC">
+  <p class="small">
+    Add clubs or edit their details below. Logo URLs should point to
+    publicly accessible images. Updating a club preserves its existing
+    voting records.
+  </p>
 
-      <label for="clubCountry">Country</label>
-      <input id="clubCountry" placeholder="e.g. England">
+  <h3 id="formHeading">Add a Football Club</h3>
 
-      <label for="clubType">Club type</label>
-      <select id="clubType">
-        <option value="">Not specified</option>
-        <option value="Men's Club">Men's Club</option>
-        <option value="Women's Club">Women's Club</option>
-        <option value="Mixed / Other">Mixed / Other</option>
-      </select>
+  <label for="clubName">Official club name *</label>
+  <input id="clubName" placeholder="e.g. Arsenal FC">
 
-      <label for="clubLogo">Club logo image URL</label>
-      <input id="clubLogo" type="url" placeholder="https://...">
+  <label for="clubCountry">Country</label>
+  <input id="clubCountry" placeholder="e.g. England">
 
-      <div class="preview">
-        <div id="logoPreviewBox" class="club-placeholder">⚽</div>
-        <div class="preview-text">
-          <strong id="previewName">Club logo preview</strong>
-          <div id="previewMessage" class="small">Enter a logo URL to preview it.</div>
-        </div>
+  <label for="clubLogo">Club logo image URL</label>
+  <input id="clubLogo" type="url" placeholder="https://...">
+
+  <div class="preview">
+    <div id="logoPreviewBox" class="club-placeholder">⚽</div>
+    <div class="preview-text">
+      <strong id="previewName">Club logo preview</strong>
+      <div id="previewMessage" class="small">
+        Enter a logo URL to preview it.
       </div>
-
-      <div class="row">
-        <button id="saveClubBtn">Add Club</button>
-        <button id="cancelEditBtn" class="secondary hidden">Cancel Edit</button>
-      </div>
-      <div id="clubStatus" class="status">Ready.</div>
-
-      <h3>Saved Football Clubs <span id="clubCount" class="count">0</span></h3>
-      <input id="clubSearch" placeholder="Search by club name, country or type">
-      <div id="clubList" class="small">Loading clubs...</div>
-    </section>
-
-    <section class="card">
-      <h2>Manage Official Sponsors</h2>
-      <p class="small">Publish and manage sponsors shown on the public page.</p>
-
-      <label for="sponsorName">Sponsor name *</label>
-      <input id="sponsorName" placeholder="Sponsor or business name">
-
-      <label for="sponsorType">Sponsorship type</label>
-      <select id="sponsorType">
-        <option>Daily sponsor</option>
-        <option>Weekly sponsor</option>
-        <option>Official sponsor</option>
-        <option>Event sponsor</option>
-      </select>
-
-      <label for="sponsorLink">Website (optional)</label>
-      <input id="sponsorLink" type="url" placeholder="https://...">
-
-      <label for="sponsorImage">Sponsor logo or flyer image URL (optional)</label>
-      <input id="sponsorImage" type="url" placeholder="https://...">
-
-      <button id="sponsorBtn">Publish Sponsor</button>
-      <div id="sponsorStatus" class="status"></div>
-      <div id="sponsorList"></div>
-    </section>
-
-    <section class="card">
-      <h2>Voting Policy</h2>
-      <p class="small">
-        The public page allows one vote per authenticated Firebase account
-        per Nigeria calendar day. Anonymous accounts can be recreated, so
-        this is not a guarantee of one vote per human.
-      </p>
-      <button id="logoutBtn" class="secondary">Sign Out</button>
-    </section>
+    </div>
   </div>
 
-  <p><a href="index.html">← Return to public rankings</a></p>
-</main>
+  <div class="row">
+    <button id="saveClubBtn">Add Club</button>
+    <button id="cancelEditBtn" class="secondary hidden">
+      Cancel Edit
+    </button>
+  </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <div id="clubStatus" class="status">Ready.</div>
 
-<script>
+  <!-- WORLDWIDE CLUB IMPORT -->
+  <h3>🌍 Worldwide Football Club Import</h3>
+
+  <p class="small">
+    Search for clubs from supported countries and leagues, then import
+    them into your existing club directory. Imported clubs will become
+    available on the public page after Firebase updates.
+  </p>
+
+  <label for="worldCountry">Country or region</label>
+  <input
+    id="worldCountry"
+    placeholder="e.g. England, Nigeria, Spain, Brazil"
+  >
+
+  <label for="worldLeague">League or competition name</label>
+  <input
+    id="worldLeague"
+    placeholder="e.g. Premier League, La Liga, CAF Champions League"
+  >
+
+  <div class="row">
+    <button id="searchWorldBtn">Search Worldwide Clubs</button>
+    <button id="clearWorldBtn" class="secondary">Clear Results</button>
+  </div>
+
+  <div class="section-note">
+    Data provider: TheSportsDB. Search results depend on the provider's
+    available records. Some leagues, teams, badges, and competitions may
+    not be available. This search does not guarantee complete worldwide
+    coverage.
+  </div>
+
+  <div id="worldStatus" class="status">
+    Enter a league name or country, then search.
+  </div>
+
+  <div class="row">
+    <button id="importAllBtn" disabled>
+      Import All Search Results
+    </button>
+  </div>
+
+  <div id="worldResults" class="import-results">
+    <p class="small">No search results yet.</p>
+  </div>
+
+  <!-- SAVED CLUBS -->
+  <h3>
+    Saved Football Clubs
+    <span id="clubCount" class="count">0</span>
+  </h3>
+
+  <p class="small">
+    Scroll inside this box to view the saved clubs. Use Edit to change
+    a club or Delete to remove it from the directory.
+  </p>
+
+  <label for="clubSearch">Find a saved club</label>
+  <input
+    id="clubSearch"
+    placeholder="Search club name or country"
+  >
+
+  <div id="clubList" class="club-list">
+    <p class="small">Loading clubs...</p>
+  </div>
+
+  <div class="row">
+    <button id="reloadClubsBtn" class="secondary">
+      Refresh Clubs
+    </button>
+  </div>
+
+</section>
+
+<!-- SPONSORS -->
+<section class="card">
+  <h2>Manage Official Sponsors</h2>
+
+  <p class="small">
+    Publish and manage sponsors shown on the public rankings page.
+  </p>
+
+  <label for="sponsorName">Sponsor name *</label>
+  <input
+    id="sponsorName"
+    placeholder="Sponsor or business name"
+  >
+
+  <label for="sponsorLink">Website (optional)</label>
+  <input
+    id="sponsorLink"
+    type="url"
+    placeholder="https://..."
+  >
+
+  <label for="sponsorImage">
+    Sponsor logo or flyer image URL (optional)
+  </label>
+  <input
+    id="sponsorImage"
+    type="url"
+    placeholder="https://..."
+  >
+
+  <button id="sponsorBtn">Publish Sponsor</button>
+
+  <div id="sponsorStatus" class="status">Ready.</div>
+  <div id="sponsorList"></div>
+</section>
+
+<!-- VOTING POLICY -->
+<section class="card">
+  <h2>Voting Policy</h2>
+
+  <p class="small">
+    The public page allows one vote per authenticated Firebase account
+    per Nigeria calendar day. Anonymous accounts can be recreated, so
+    this is not a guarantee of one vote per human.
+  </p>
+
+  <button id="logoutBtn" class="secondary">Sign Out</button>
+</section>
+
+  </div>  <p>
+    <a href="index.html">← Return to public rankings</a>
+  </p></main><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script><script>
 (function(){
 "use strict";
 
+/* KEEP THE EXISTING FIREBASE PROJECT */
 const firebaseConfig={
   apiKey:"AIzaSyDS_m5jMk1iQgHIo14S9_sTxnmUrKE9qIo",
   authDomain:"kulzzy-football-fan-rankings.firebaseapp.com",
@@ -181,6 +551,13 @@ const firebaseConfig={
 };
 
 const ADMIN_EMAIL="dstnewz.ng@gmail.com";
+
+/*
+  TheSportsDB public API.
+  Its free API and records have limits.
+*/
+const SPORTSDB_API="https://www.thesportsdb.com/api/v1/json/3/";
+
 firebase.initializeApp(firebaseConfig);
 
 const auth=firebase.auth();
@@ -190,10 +567,18 @@ const $=id=>document.getElementById(id);
 let savedClubs={};
 let savedSponsors={};
 let editingClubId=null;
+let worldResults=[];
+let clubsListener=null;
+let sponsorsListener=null;
+let searchSequence=0;
 
 function esc(value){
   return String(value??"").replace(/[&<>"']/g,c=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
   })[c]);
 }
 
@@ -207,7 +592,8 @@ function isAdmin(user){
 }
 
 function slug(value){
-  return String(value||"").normalize("NFD")
+  return String(value||"")
+    .normalize("NFD")
     .replace(/[\u0300-\u036f]/g,"")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g,"-")
@@ -218,186 +604,344 @@ function slug(value){
 function safeURL(value){
   if(!value)return "";
   try{
-    const url=new URL(String(value));
+    const url=new URL(String(value).trim());
     return ["https:","http:"].includes(url.protocol)?url.href:"";
-  }catch(e){return "";}
+  }catch(error){
+    return "";
+  }
+}
+
+function getLogo(club){
+  if(!club)return "";
+  return safeURL(
+    club.logo||
+    club.logoUrl||
+    club.imageUrl||
+    club.image||
+    club.badgeUrl||
+    club.badge||
+    club.crest||
+    ""
+  );
 }
 
 function showPlaceholder(box){
+  if(!box)return;
   box.className="club-placeholder";
   box.textContent="⚽";
+  box.removeAttribute("style");
 }
 
-function updateLogoPreview(){
-  const url=safeURL($("clubLogo").value.trim());
-  const box=$("logoPreviewBox");
-  $("previewName").textContent=$("clubName").value.trim()||"Club logo preview";
+function makeLogoPreview(url){
+  const old=$("logoPreviewBox");
+  if(!old)return;
 
   if(!url){
-    showPlaceholder(box);
-    $("previewMessage").textContent="Enter a valid public image URL to preview it.";
+    showPlaceholder(old);
+    $("previewMessage").textContent=
+      "Enter a public image URL to preview it.";
     return;
   }
 
-  const image=document.createElement("img");
+  const image=new Image();
   image.alt="Club logo preview";
   image.referrerPolicy="no-referrer";
-  image.onload=()=>{
-    box.replaceWith(image);
+
+  image.onload=function(){
+    const current=$("logoPreviewBox");
+    if(!current)return;
+
     image.id="logoPreviewBox";
     image.className="";
-    image.style.cssText="width:52px;height:52px;flex:0 0 52px;object-fit:contain;background:#fff;border-radius:8px;padding:3px";
+    image.style.cssText=
+      "width:52px;height:52px;flex:0 0 52px;object-fit:contain;background:#fff;border-radius:8px;padding:3px";
+
+    current.replaceWith(image);
     $("previewMessage").textContent="Logo loaded successfully.";
   };
-  image.onerror=()=>{
+
+  image.onerror=function(){
     const current=$("logoPreviewBox");
     if(current)showPlaceholder(current);
-    $("previewMessage").textContent="Logo could not load. Check the URL or use another image URL.";
+
+    $("previewMessage").textContent=
+      "The image could not load. Check the URL or try another public image URL.";
   };
+
   image.src=url;
 }
 
 function resetLogoPreview(){
   const old=$("logoPreviewBox");
+  if(!old)return;
+
   const box=document.createElement("div");
   box.id="logoPreviewBox";
   box.className="club-placeholder";
   box.textContent="⚽";
   old.replaceWith(box);
-  updateLogoPreview();
+
+  $("previewName").textContent=
+    $("clubName").value.trim()||"Club logo preview";
+
+  makeLogoPreview(safeURL($("clubLogo").value.trim()));
 }
 
-$("clubLogo").addEventListener("input",resetLogoPreview);
-$("clubName").addEventListener("input",()=>{
-  $("previewName").textContent=$("clubName").value.trim()||"Club logo preview";
+$("clubLogo").addEventListener("input",function(){
+  resetLogoPreview();
 });
 
-auth.onAuthStateChanged(user=>{
+$("clubName").addEventListener("input",function(){
+  $("previewName").textContent=
+    $("clubName").value.trim()||"Club logo preview";
+});
+
+/* AUTHENTICATION */
+auth.onAuthStateChanged(function(user){
   if(isAdmin(user)){
     $("loginBox").classList.add("hidden");
     $("adminArea").classList.remove("hidden");
-    loadClubs();
-    loadSponsors();
+
+    attachRealtimeListeners();
   }else{
+    detachRealtimeListeners();
+
     $("loginBox").classList.remove("hidden");
     $("adminArea").classList.add("hidden");
+
     if(user){
       auth.signOut();
-      status("loginStatus","This account is not authorized to administer this page.");
+      status(
+        "loginStatus",
+        "This account is not authorized to administer this page."
+      );
     }
   }
 });
 
-$("loginBtn").addEventListener("click",async()=>{
+$("loginBtn").addEventListener("click",async function(){
   const email=$("email").value.trim();
   const password=$("password").value;
+
   if(!email||!password){
-    status("loginStatus","Enter your administrator email and password.");
+    status(
+      "loginStatus",
+      "Enter your administrator email and password."
+    );
     return;
   }
+
   $("loginBtn").disabled=true;
+
   try{
     await auth.signInWithEmailAndPassword(email,password);
     status("loginStatus","Signed in successfully.");
   }catch(error){
     console.error(error);
-    status("loginStatus","Sign-in failed. Check your email, password and Firebase Authentication settings.");
+    status(
+      "loginStatus",
+      "Sign-in failed. Check your email, password and Firebase Authentication settings."
+    );
   }finally{
     $("loginBtn").disabled=false;
   }
 });
 
-$("logoutBtn").addEventListener("click",()=>auth.signOut());
+$("password").addEventListener("keydown",function(event){
+  if(event.key==="Enter")$("loginBtn").click();
+});
 
-async function loadClubs(){
-  try{
-    const snap=await db.ref("candidates/club").once("value");
-    savedClubs=snap.val()||{};
+$("logoutBtn").addEventListener("click",function(){
+  auth.signOut();
+});
+
+/* REALTIME FIREBASE LISTENERS */
+function attachRealtimeListeners(){
+  if(!isAdmin(auth.currentUser))return;
+
+  detachRealtimeListeners();
+
+  clubsListener=function(snapshot){
+    savedClubs=snapshot.val()||{};
     renderClubs();
-  }catch(error){
-    console.error(error);
-    status("clubStatus","Could not load clubs. Check your Firebase database rules.");
+  };
+
+  sponsorsListener=function(snapshot){
+    savedSponsors=snapshot.val()||{};
+    renderSponsors();
+  };
+
+  db.ref("candidates/club").on(
+    "value",
+    clubsListener,
+    function(error){
+      console.error(error);
+      status(
+        "clubStatus",
+        "Could not load clubs. Check Firebase database rules and your connection."
+      );
+    }
+  );
+
+  db.ref("sponsors").on(
+    "value",
+    sponsorsListener,
+    function(error){
+      console.error(error);
+      status(
+        "sponsorStatus",
+        "Could not load sponsors. Check Firebase database rules."
+      );
+    }
+  );
+}
+
+function detachRealtimeListeners(){
+  if(clubsListener){
+    db.ref("candidates/club").off("value",clubsListener);
+    clubsListener=null;
+  }
+
+  if(sponsorsListener){
+    db.ref("sponsors").off("value",sponsorsListener);
+    sponsorsListener=null;
   }
 }
 
+/* SAVED CLUB DIRECTORY */
 function clubImageHTML(club){
-  const url=safeURL(club.logo||club.logoUrl||club.imageUrl||club.badgeUrl||"");
-  if(!url)return '<div class="club-placeholder">⚽</div>';
-  return '<img src="'+esc(url)+'" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'club-placeholder\',textContent:\'⚽\'}))">';
+  const url=getLogo(club);
+
+  if(!url){
+    return '<div class="club-placeholder">⚽</div>';
+  }
+
+  return '<img src="'+esc(url)+
+    '" alt="" loading="lazy" referrerpolicy="no-referrer" '+
+    'onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'club-placeholder\',textContent:\'⚽\'}))">';
 }
 
 function renderClubs(){
   const search=$("clubSearch").value.trim().toLowerCase();
-  const entries=Object.entries(savedClubs).filter(([id,c])=>{
-    if(!c||!c.name)return false;
-    const text=[c.name,c.country,c.clubType,c.gender].join(" ").toLowerCase();
-    return text.includes(search);
-  }).sort((a,b)=>a[1].name.localeCompare(b[1].name));
 
-  $("clubCount").textContent=Object.values(savedClubs).filter(c=>c&&c.name).length;
+  const entries=Object.entries(savedClubs)
+    .filter(function([id,club]){
+      if(!club||!club.name)return false;
+
+      const text=[
+        club.name,
+        club.country,
+        club.countryName
+      ].join(" ").toLowerCase();
+
+      return text.includes(search);
+    })
+    .sort(function(a,b){
+      return String(a[1].name).localeCompare(String(b[1].name));
+    });
+
+  $("clubCount").textContent=
+    Object.values(savedClubs).filter(function(club){
+      return club&&club.name;
+    }).length;
 
   if(!entries.length){
-    $("clubList").innerHTML='<p class="small">No matching clubs found.</p>';
+    $("clubList").innerHTML=
+      '<p class="small">No matching clubs found.</p>';
     return;
   }
 
-  $("clubList").innerHTML=entries.map(([id,c])=>
-    '<div class="item">'+
-      clubImageHTML(c)+
-      '<div class="item-info"><strong>'+esc(c.name)+'</strong>'+
-      '<small>'+esc(c.country||"Country not set")+'</small>'+
-      '<small>'+esc(c.clubType||c.gender||"Club type not set")+'</small></div>'+
-      '<div class="item-actions">'+
-      '<button type="button" class="secondary" data-edit="'+esc(id)+'">Edit</button>'+
-      '<button type="button" class="danger" data-delete="'+esc(id)+'">Delete</button>'+
+  $("clubList").innerHTML=entries.map(function([id,club]){
+    return '<div class="item">'+
+      clubImageHTML(club)+
+      '<div class="item-info">'+
+        '<strong>'+esc(club.name)+'</strong>'+
+        '<small>'+esc(club.country||club.countryName||"Country not set")+'</small>'+
       '</div>'+
-    '</div>'
-  ).join("");
+      '<div class="item-actions">'+
+        '<button type="button" class="secondary" data-edit="'+esc(id)+'">Edit</button>'+
+        '<button type="button" class="danger" data-delete="'+esc(id)+'">Delete</button>'+
+      '</div>'+
+    '</div>';
+  }).join("");
 
-  $("clubList").querySelectorAll("[data-edit]").forEach(button=>{
-    button.addEventListener("click",()=>editClub(button.dataset.edit));
+  $("clubList").querySelectorAll("[data-edit]").forEach(function(button){
+    button.addEventListener("click",function(){
+      editClub(button.dataset.edit);
+    });
   });
 
-  $("clubList").querySelectorAll("[data-delete]").forEach(button=>{
-    button.addEventListener("click",()=>deleteClub(button.dataset.delete));
+  $("clubList").querySelectorAll("[data-delete]").forEach(function(button){
+    button.addEventListener("click",function(){
+      deleteClub(button.dataset.delete);
+    });
   });
 }
 
+$("clubSearch").addEventListener("input",renderClubs);
+
+$("reloadClubsBtn").addEventListener("click",async function(){
+  if(!isAdmin(auth.currentUser))return;
+
+  try{
+    const snapshot=await db.ref("candidates/club").once("value");
+    savedClubs=snapshot.val()||{};
+    renderClubs();
+    status("clubStatus","Club list refreshed.");
+  }catch(error){
+    console.error(error);
+    status("clubStatus","Could not refresh clubs. Check your connection.");
+  }
+});
+
+/* EDIT EXISTING CLUB */
 function editClub(id){
   const club=savedClubs[id];
   if(!club)return;
 
   editingClubId=id;
+
   $("clubName").value=club.name||"";
   $("clubCountry").value=club.country||club.countryName||"";
-  $("clubType").value=club.clubType||club.gender||"";
-  $("clubLogo").value=club.logo||club.logoUrl||club.imageUrl||club.badgeUrl||"";
+  $("clubLogo").value=getLogo(club);
 
   $("formHeading").textContent="Edit Football Club";
-  $("saveClubBtn").textContent="Save Club Changes";
+  $("saveClubBtn").textContent="Update Club";
   $("cancelEditBtn").classList.remove("hidden");
+
   resetLogoPreview();
-  status("clubStatus","Editing "+club.name+". Save changes when ready.");
-  $("formHeading").scrollIntoView({behavior:"smooth",block:"center"});
+
+  status(
+    "clubStatus",
+    "Editing "+club.name+". Change the details and press Update Club."
+  );
+
+  $("formHeading").scrollIntoView({
+    behavior:"smooth",
+    block:"center"
+  });
 }
 
 function resetForm(){
   editingClubId=null;
+
   $("clubName").value="";
   $("clubCountry").value="";
-  $("clubType").value="";
   $("clubLogo").value="";
+
   $("formHeading").textContent="Add a Football Club";
   $("saveClubBtn").textContent="Add Club";
   $("cancelEditBtn").classList.add("hidden");
+
   resetLogoPreview();
 }
 
-$("cancelEditBtn").addEventListener("click",()=>{
+$("cancelEditBtn").addEventListener("click",function(){
   resetForm();
   status("clubStatus","Edit cancelled.");
 });
 
+/* ADD OR UPDATE CLUB */
 async function saveClub(){
   if(!isAdmin(auth.currentUser)){
     status("clubStatus","Administrator access required.");
@@ -406,136 +950,633 @@ async function saveClub(){
 
   const name=$("clubName").value.trim();
   const country=$("clubCountry").value.trim();
-  const clubType=$("clubType").value;
-  const logo=safeURL($("clubLogo").value.trim());
+  const logoText=$("clubLogo").value.trim();
+  const logo=safeURL(logoText);
 
   if(!name){
     status("clubStatus","Enter the official football club name.");
     return;
   }
 
+  if(logoText&&!logo){
+    status(
+      "clubStatus",
+      "The logo URL must begin with https:// or http://"
+    );
+    return;
+  }
+
+  /*
+    Keep the existing Firebase ID when editing.
+    This is important because votes refer to the club ID.
+  */
   const id=editingClubId||slug(name);
+
   if(!id){
     status("clubStatus","Could not create a valid club ID.");
     return;
   }
 
-  if($("clubLogo").value.trim()&&!logo){
-    status("clubStatus","The logo URL must begin with https:// or http://");
-    return;
-  }
-
   $("saveClubBtn").disabled=true;
+
   try{
     const ref=db.ref("candidates/club/"+id);
-    const snap=await ref.once("value");
-    const existing=snap.val()||{};
+    const snapshot=await ref.once("value");
+    const existing=snapshot.val()||{};
 
-    if(!editingClubId&&snap.exists()){
-      status("clubStatus","A club with this ID already exists. Use Edit to update its details.");
+    if(!editingClubId&&snapshot.exists()){
+      status(
+        "clubStatus",
+        "A club with this ID already exists. Search for it and use Edit to update it."
+      );
       return;
     }
 
     const updated={
       ...existing,
-      name,
-      country,
-      clubType,
-      logo,
+      name:name,
+      country:country,
+      logo:logo,
       active:existing.active!==false,
       updatedAt:firebase.database.ServerValue.TIMESTAMP
     };
 
-    if(!snap.exists()){
+    if(!snapshot.exists()){
       updated.createdAt=firebase.database.ServerValue.TIMESTAMP;
     }
 
     await ref.update(updated);
-    status("clubStatus",editingClubId?
-      "Club updated successfully. Existing votes were preserved.":
-      "Club added successfully.");
+
+    status(
+      "clubStatus",
+      editingClubId
+        ? "Club updated successfully. Existing voting records were preserved."
+        : "Club added successfully."
+    );
 
     resetForm();
-    await loadClubs();
+
+    /*
+      The Firebase real-time listener updates the visible club list
+      automatically. No manual page reload is required.
+    */
   }catch(error){
     console.error(error);
-    status("clubStatus","Could not save the club. Check Firebase database rules and your connection.");
+    status(
+      "clubStatus",
+      "Could not save the club. Check Firebase database rules and your internet connection."
+    );
   }finally{
     $("saveClubBtn").disabled=false;
   }
 }
 
 $("saveClubBtn").addEventListener("click",saveClub);
-$("clubSearch").addEventListener("input",renderClubs);
-$("reloadClubsBtn")?.addEventListener("click",loadClubs);
 
+/* DELETE CLUB WITHOUT DELETING VOTE HISTORY */
 async function deleteClub(id){
   if(!isAdmin(auth.currentUser))return;
+
   const club=savedClubs[id];
   if(!club)return;
 
-  if(!confirm('Remove "'+club.name+'" from the public club list? Its historical vote records will not be deleted.'))return;
-
-  try{
-    await db.ref("candidates/club/"+id).remove();
-    status("clubStatus","Club removed from the directory. Its vote records have not been deleted.");
-    if(editingClubId===id)resetForm();
-    await loadClubs();
-  }catch(error){
-    console.error(error);
-    status("clubStatus","Could not remove the club. Check Firebase database rules.");
-  }
-}
-
-/* SPONSOR MANAGEMENT */
-async function loadSponsors(){
-  try{
-    const snap=await db.ref("sponsors").once("value");
-    savedSponsors=snap.val()||{};
-    renderSponsors();
-  }catch(error){
-    console.error(error);
-    status("sponsorStatus","Could not load sponsors. Check Firebase database rules.");
-  }
-}
-
-function renderSponsors(){
-  const entries=Object.entries(savedSponsors||{});
-  if(!entries.length){
-    $("sponsorList").innerHTML='<p class="small">No sponsors have been published yet.</p>';
+  if(!confirm(
+    'Remove "'+club.name+'" from the public club list? '+
+    'This will not delete the historical vote records.'
+  )){
     return;
   }
 
-  $("sponsorList").innerHTML=entries.map(([id,s])=>{
-    if(typeof s==="string")s={name:"Official Sponsor",link:s};
-    return '<div class="item">'+
-      (safeURL(s.image||s.imageUrl||s.logo)?
-        '<img src="'+esc(safeURL(s.image||s.imageUrl||s.logo))+'" alt="" onerror="this.style.display=\'none\'">':
-        '<div class="club-placeholder">🤝</div>')+
-      '<div class="item-info"><strong>'+esc(s.name||"Official Sponsor")+'</strong>'+
-      '<small>'+esc(s.type||"")+'</small>'+
-      '</div><div class="item-actions">'+
-      '<button type="button" class="danger" data-delete-sponsor="'+esc(id)+'">Remove</button>'+
-      '</div></div>';
+  try{
+    await db.ref("candidates/club/"+id).remove();
+
+    status(
+      "clubStatus",
+      "Club removed from the directory. Historical vote records were not deleted."
+    );
+
+    if(editingClubId===id)resetForm();
+
+    /*
+      The real-time Firebase listener refreshes the list automatically.
+    */
+  }catch(error){
+    console.error(error);
+    status(
+      "clubStatus",
+      "Could not remove the club. Check Firebase database rules."
+    );
+  }
+}
+
+/* WORLDWIDE CLUB SEARCH */
+function extractTeam(team){
+  if(!team)return null;
+
+  const name=String(
+    team.strTeam||
+    team.strTeamAlternate||
+    ""
+  ).trim();
+
+  if(!name)return null;
+
+  const country=String(
+    team.strCountry||
+    team.strTeamLocation||
+    $("worldCountry").value.trim()||
+    ""
+  ).trim();
+
+  const logo=safeURL(
+    team.strBadge||
+    team.strTeamBadge||
+    team.strLogo||
+    team.strPoster||
+    ""
+  );
+
+  return {
+    name:name,
+    country:country,
+    logo:logo,
+    externalId:String(team.idTeam||""),
+    league:String(team.strLeague||$("worldLeague").value.trim()||""),
+    source:"TheSportsDB"
+  };
+}
+
+async function fetchSportsDB(path){
+  const response=await fetch(SPORTSDB_API+path);
+
+  if(!response.ok){
+    throw new Error("Football data provider returned HTTP "+response.status);
+  }
+
+  return await response.json();
+}
+
+async function searchWorldwideClubs(){
+  if(!isAdmin(auth.currentUser)){
+    status("worldStatus","Administrator access required.");
+    return;
+  }
+
+  const country=$("worldCountry").value.trim();
+  const league=$("worldLeague").value.trim();
+
+  if(!country&&!league){
+    status(
+      "worldStatus",
+      "Enter a country or a league/competition name before searching."
+    );
+    return;
+  }
+
+  const currentSequence=++searchSequence;
+
+  worldResults=[];
+  renderWorldResults();
+
+  $("searchWorldBtn").disabled=true;
+  $("importAllBtn").disabled=true;
+
+  status(
+    "worldStatus",
+    "Searching the worldwide football data source..."
+  );
+
+  try{
+    let rawTeams=[];
+
+    /*
+      Search a named league/competition first.
+      TheSportsDB search_all_teams endpoint accepts a league name.
+    */
+    if(league){
+      const data=await fetchSportsDB(
+        "search_all_teams.php?l="+encodeURIComponent(league)
+      );
+
+      if(currentSequence!==searchSequence)return;
+
+      if(Array.isArray(data.teams)){
+        rawTeams=rawTeams.concat(data.teams);
+      }
+    }
+
+    /*
+      When a country is supplied, query the provider's team search
+      endpoint. It may return partial results depending on the provider.
+    */
+    if(country){
+      const data=await fetchSportsDB(
+        "searchteams.php?t="+encodeURIComponent(country)
+      );
+
+      if(currentSequence!==searchSequence)return;
+
+      if(Array.isArray(data.teams)){
+        rawTeams=rawTeams.concat(data.teams);
+      }
+
+      /*
+        Also attempt country-and-sport team listing. Unsupported country
+        names may simply return no teams.
+      */
+      try{
+        const countryData=await fetchSportsDB(
+          "search_all_teams.php?c="+encodeURIComponent(country)+"&s=Soccer"
+        );
+
+        if(currentSequence!==searchSequence)return;
+
+        if(Array.isArray(countryData.teams)){
+          rawTeams=rawTeams.concat(countryData.teams);
+        }
+      }catch(countryError){
+        console.warn("Country team lookup was unavailable:",countryError);
+      }
+    }
+
+    const seen=new Set();
+
+    worldResults=rawTeams
+      .map(extractTeam)
+      .filter(function(team){
+        if(!team)return false;
+
+        const key=slug(team.name);
+        if(!key||seen.has(key))return false;
+
+        seen.add(key);
+        return true;
+      })
+      .sort(function(a,b){
+        return a.name.localeCompare(b.name);
+      });
+
+    if(!worldResults.length){
+      renderWorldResults();
+
+      status(
+        "worldStatus",
+        "No clubs were returned. Try a different league or country name. " +
+        "The data provider does not contain every club worldwide."
+      );
+
+      return;
+    }
+
+    renderWorldResults();
+
+    status(
+      "worldStatus",
+      "Found "+worldResults.length+
+      " club(s). Review the results and import individual clubs or all results."
+    );
+
+  }catch(error){
+    console.error(error);
+
+    status(
+      "worldStatus",
+      "Worldwide search failed. Check your internet connection, try another search, or check whether TheSportsDB is available."
+    );
+  }finally{
+    if(currentSequence===searchSequence){
+      $("searchWorldBtn").disabled=false;
+    }
+  }
+}
+
+$("searchWorldBtn").addEventListener("click",searchWorldwideClubs);
+
+$("worldCountry").addEventListener("keydown",function(event){
+  if(event.key==="Enter")searchWorldwideClubs();
+});
+
+$("worldLeague").addEventListener("keydown",function(event){
+  if(event.key==="Enter")searchWorldwideClubs();
+});
+
+$("clearWorldBtn").addEventListener("click",function(){
+  searchSequence++;
+  worldResults=[];
+  renderWorldResults();
+
+  status("worldStatus","Search results cleared.");
+  $("importAllBtn").disabled=true;
+  $("searchWorldBtn").disabled=false;
+});
+
+/* DISPLAY SEARCH RESULTS */
+function renderWorldResults(){
+  const box=$("worldResults");
+
+  if(!worldResults.length){
+    box.innerHTML='<p class="small">No search results yet.</p>';
+    $("importAllBtn").disabled=true;
+    return;
+  }
+
+  $("importAllBtn").disabled=false;
+
+  box.innerHTML=worldResults.map(function(team,index){
+    const logo=team.logo
+      ? '<img src="'+esc(team.logo)+'" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'club-placeholder\',textContent:\'⚽\'}))">'
+      : '<div class="club-placeholder">⚽</div>';
+
+    return '<div class="import-result">'+
+      logo+
+      '<div class="import-result-info">'+
+        '<strong>'+esc(team.name)+'</strong>'+
+        '<small>'+esc(team.country||"Country not provided")+
+        (team.league?" · "+esc(team.league):"")+'</small>'+
+      '</div>'+
+      '<button type="button" data-import-one="'+index+'">Import</button>'+
+    '</div>';
   }).join("");
 
-  $("sponsorList").querySelectorAll("[data-delete-sponsor]").forEach(button=>{
-    button.addEventListener("click",async()=>{
-      if(!isAdmin(auth.currentUser))return;
-      if(!confirm("Remove this sponsor from the public page?"))return;
+  box.querySelectorAll("[data-import-one]").forEach(function(button){
+    button.addEventListener("click",async function(){
+      const index=Number(button.dataset.importOne);
+      const team=worldResults[index];
+
+      if(!team)return;
+
+      button.disabled=true;
+
       try{
-        await db.ref("sponsors/"+button.dataset.deleteSponsor).remove();
-        status("sponsorStatus","Sponsor removed.");
-        await loadSponsors();
-      }catch(error){
-        console.error(error);
-        status("sponsorStatus","Could not remove sponsor. Check Firebase database rules.");
+        await importOneTeam(team);
+      }finally{
+        button.disabled=false;
       }
     });
   });
 }
 
-$("sponsorBtn").addEventListener("click",async()=>{
+/* IMPORT ONE CLUB INTO FIREBASE */
+async function importOneTeam(team){
+  if(!isAdmin(auth.currentUser)){
+    status("worldStatus","Administrator access required.");
+    return false;
+  }
+
+  const name=String(team.name||"").trim();
+
+  if(!name){
+    status("worldStatus","The selected team has no name.");
+    return false;
+  }
+
+  const id=slug(name);
+
+  if(!id){
+    status("worldStatus","Could not create an ID for "+name+".");
+    return false;
+  }
+
+  try{
+    const ref=db.ref("candidates/club/"+id);
+    const snapshot=await ref.once("value");
+    const existing=snapshot.val()||{};
+
+    /*
+      If the club already exists, fill missing information but do not
+      overwrite its existing name, logo, country, or voting-related fields.
+      Use Edit if you want to change an existing club manually.
+    */
+    if(snapshot.exists()){
+      const updates={};
+
+      if(!existing.country&&team.country){
+        updates.country=team.country;
+      }
+
+      if(!getLogo(existing)&&team.logo){
+        updates.logo=team.logo;
+      }
+
+      if(!existing.name){
+        updates.name=name;
+      }
+
+      if(Object.keys(updates).length){
+        updates.updatedAt=firebase.database.ServerValue.TIMESTAMP;
+        await ref.update(updates);
+
+        status(
+          "worldStatus",
+          name+" already existed. Missing details were updated where possible."
+        );
+      }else{
+        status(
+          "worldStatus",
+          name+" is already in your directory. No duplicate was created."
+        );
+      }
+
+      return true;
+    }
+
+    await ref.set({
+      name:name,
+      country:team.country||"",
+      logo:team.logo||"",
+      active:true,
+      source:team.source||"TheSportsDB",
+      externalId:team.externalId||"",
+      league:team.league||"",
+      createdAt:firebase.database.ServerValue.TIMESTAMP,
+      updatedAt:firebase.database.ServerValue.TIMESTAMP
+    });
+
+    status(
+      "worldStatus",
+      name+" imported successfully. The saved club list updates automatically."
+    );
+
+    return true;
+
+  }catch(error){
+    console.error(error);
+
+    status(
+      "worldStatus",
+      "Could not import "+name+". Check Firebase database rules and your internet connection."
+    );
+
+    return false;
+  }
+}
+
+/* IMPORT ALL SEARCH RESULTS */
+$("importAllBtn").addEventListener("click",async function(){
+  if(!isAdmin(auth.currentUser)){
+    status("worldStatus","Administrator access required.");
+    return;
+  }
+
+  if(!worldResults.length){
+    status("worldStatus","Search for clubs before importing.");
+    return;
+  }
+
+  if(!confirm(
+    "Import all "+worldResults.length+
+    " search result(s)? Existing clubs will not be duplicated, and their existing details will be preserved unless missing."
+  )){
+    return;
+  }
+
+  $("importAllBtn").disabled=true;
+  $("searchWorldBtn").disabled=true;
+
+  let imported=0;
+  let failed=0;
+  let alreadyPresent=0;
+
+  try{
+    for(let i=0;i<worldResults.length;i++){
+      const team=worldResults[i];
+
+      status(
+        "worldStatus",
+        "Processing "+(i+1)+" of "+worldResults.length+": "+team.name
+      );
+
+      const id=slug(team.name);
+
+      try{
+        const ref=db.ref("candidates/club/"+id);
+        const snapshot=await ref.once("value");
+
+        if(snapshot.exists()){
+          const existing=snapshot.val()||{};
+          const updates={};
+
+          if(!existing.country&&team.country){
+            updates.country=team.country;
+          }
+
+          if(!getLogo(existing)&&team.logo){
+            updates.logo=team.logo;
+          }
+
+          if(Object.keys(updates).length){
+            updates.updatedAt=firebase.database.ServerValue.TIMESTAMP;
+            await ref.update(updates);
+          }
+
+          alreadyPresent++;
+        }else{
+          await ref.set({
+            name:team.name,
+            country:team.country||"",
+            logo:team.logo||"",
+            active:true,
+            source:team.source||"TheSportsDB",
+            externalId:team.externalId||"",
+            league:team.league||"",
+            createdAt:firebase.database.ServerValue.TIMESTAMP,
+            updatedAt:firebase.database.ServerValue.TIMESTAMP
+          });
+
+          imported++;
+        }
+      }catch(error){
+        console.error("Import failed for "+team.name,error);
+        failed++;
+      }
+    }
+
+    status(
+      "worldStatus",
+      "Import completed.\n"+
+      "New clubs added: "+imported+"\n"+
+      "Already in directory: "+alreadyPresent+"\n"+
+      "Failed: "+failed+"\n"+
+      "The saved club list updates automatically from Firebase."
+    );
+
+  }finally{
+    $("importAllBtn").disabled=worldResults.length===0;
+    $("searchWorldBtn").disabled=false;
+  }
+});
+
+/* SPONSOR MANAGEMENT */
+async function removeSponsor(id){
+  if(!isAdmin(auth.currentUser))return;
+
+  if(!confirm("Remove this sponsor from the public page?"))return;
+
+  try{
+    await db.ref("sponsors/"+id).remove();
+
+    status("sponsorStatus","Sponsor removed.");
+    /* The realtime listener refreshes the sponsor list. */
+  }catch(error){
+    console.error(error);
+    status(
+      "sponsorStatus",
+      "Could not remove sponsor. Check Firebase database rules."
+    );
+  }
+}
+
+function renderSponsors(){
+  const entries=Object.entries(savedSponsors||{});
+
+  if(!entries.length){
+    $("sponsorList").innerHTML=
+      '<p class="small">No sponsors have been published yet.</p>';
+    return;
+  }
+
+  $("sponsorList").innerHTML=entries.map(function([id,sponsor]){
+    let item=sponsor||{};
+
+    if(typeof item==="string"){
+      item={name:"Official Sponsor",link:item};
+    }
+
+    const image=safeURL(
+      item.image||
+      item.imageUrl||
+      item.logo||
+      ""
+    );
+
+    const logoHTML=image
+      ? '<img src="'+esc(image)+'" alt="" loading="lazy" onerror="this.style.display=\'none\'">'
+      : '<div class="club-placeholder">🤝</div>';
+
+    return '<div class="item">'+
+      logoHTML+
+      '<div class="item-info">'+
+        '<strong>'+esc(item.name||"Official Sponsor")+'</strong>'+
+        (item.link
+          ? '<small><a href="'+esc(safeURL(item.link))+'" target="_blank" rel="noopener">Visit website</a></small>'
+          : '')+
+      '</div>'+
+      '<div class="item-actions">'+
+        '<button type="button" class="danger" data-delete-sponsor="'+esc(id)+'">Remove</button>'+
+      '</div>'+
+    '</div>';
+  }).join("");
+
+  $("sponsorList")
+    .querySelectorAll("[data-delete-sponsor]")
+    .forEach(function(button){
+      button.addEventListener("click",function(){
+        removeSponsor(button.dataset.deleteSponsor);
+      });
+    });
+}
+
+$("sponsorBtn").addEventListener("click",async function(){
   if(!isAdmin(auth.currentUser)){
     status("sponsorStatus","Administrator access required.");
     return;
@@ -544,6 +1585,7 @@ $("sponsorBtn").addEventListener("click",async()=>{
   const name=$("sponsorName").value.trim();
   const linkText=$("sponsorLink").value.trim();
   const imageText=$("sponsorImage").value.trim();
+
   const link=safeURL(linkText);
   const image=safeURL(imageText);
 
@@ -551,39 +1593,53 @@ $("sponsorBtn").addEventListener("click",async()=>{
     status("sponsorStatus","Enter the sponsor name.");
     return;
   }
+
   if(linkText&&!link){
-    status("sponsorStatus","The website must start with https:// or http://");
+    status(
+      "sponsorStatus",
+      "The website must start with https:// or http://"
+    );
     return;
   }
+
   if(imageText&&!image){
-    status("sponsorStatus","The image URL must start with https:// or http://");
+    status(
+      "sponsorStatus",
+      "The image URL must start with https:// or http://"
+    );
     return;
   }
 
   $("sponsorBtn").disabled=true;
+
   try{
     await db.ref("sponsors").push({
-      name,
-      type:$("sponsorType").value,
-      link,
-      image,
+      name:name,
+      link:link,
+      image:image,
       createdAt:firebase.database.ServerValue.TIMESTAMP
     });
 
     status("sponsorStatus","Sponsor published successfully.");
+
     $("sponsorName").value="";
     $("sponsorLink").value="";
     $("sponsorImage").value="";
-    await loadSponsors();
+
+    /* The realtime listener updates the sponsor list automatically. */
+
   }catch(error){
     console.error(error);
-    status("sponsorStatus","Could not publish sponsor. Check Firebase database rules.");
+
+    status(
+      "sponsorStatus",
+      "Could not publish sponsor. Check Firebase database rules."
+    );
   }finally{
     $("sponsorBtn").disabled=false;
   }
 });
 
 })();
-</script>
-</body>
+</script></body>
 </html>
