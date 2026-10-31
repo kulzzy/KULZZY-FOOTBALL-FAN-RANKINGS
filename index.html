@@ -1,1 +1,530 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#06122a">
+<title>Kulzzy Football Fan Rankings</title>
+
+<style>
+:root {
+  --navy:#06122a;
+  --panel:#0d2042;
+  --gold:#ffd700;
+  --white:#ffffff;
+  --muted:#b8c4d9;
+  --border:#2a4168;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:linear-gradient(160deg,#06122a,#0a1833 60%,#101f3b);
+  color:var(--white);
+  font-family:Arial,sans-serif;
+  min-height:100vh;
+}
+header {
+  padding:24px 14px;
+  text-align:center;
+  border-bottom:1px solid var(--border);
+  background:var(--navy);
+}
+.brand {
+  color:var(--gold);
+  font-size:12px;
+  font-weight:bold;
+  letter-spacing:2px;
+}
+h1 {
+  color:var(--gold);
+  font-size:clamp(24px,6vw,36px);
+  margin:10px 0;
+}
+header p { color:var(--muted); margin:0; }
+main { max-width:900px; margin:auto; padding:14px; }
+.card {
+  background:var(--panel);
+  border:1px solid #23395f;
+  border-radius:16px;
+  padding:16px;
+  margin:14px 0;
+  box-shadow:0 8px 24px #0002;
+}
+.eyebrow {
+  color:var(--gold);
+  font-size:12px;
+  letter-spacing:1.3px;
+  font-weight:bold;
+}
+h2 { margin:8px 0 14px; }
+.category {
+  font-size:clamp(22px,5vw,30px);
+  margin:10px 0;
+}
+.small {
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.6;
+}
+.status {
+  padding:12px;
+  border-radius:10px;
+  background:#07162f;
+  color:var(--muted);
+  font-size:14px;
+  margin-top:10px;
+  overflow-wrap:anywhere;
+}
+.row {
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+}
+button {
+  background:var(--gold);
+  color:var(--navy);
+  border:0;
+  border-radius:10px;
+  padding:12px 15px;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:disabled { opacity:.45; cursor:not-allowed; }
+.candidate {
+  display:flex;
+  gap:12px;
+  align-items:center;
+  margin:11px 0;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:13px;
+  background:#081831;
+}
+.candidate img {
+  width:62px;
+  height:62px;
+  object-fit:cover;
+  border-radius:10px;
+  background:#172b4b;
+  flex-shrink:0;
+}
+.details { flex:1; min-width:0; }
+.details h3 { margin:0 0 6px; font-size:16px; overflow-wrap:anywhere; }
+.details p { margin:0; color:var(--muted); font-size:13px; }
+.candidate button { min-width:76px; }
+.bar {
+  height:7px;
+  background:#253858;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:8px;
+}
+.bar span {
+  display:block;
+  height:100%;
+  background:var(--gold);
+}
+.winner { border-color:var(--gold); }
+.sponsors {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:10px;
+}
+.sponsor {
+  padding:12px;
+  border:1px solid #425574;
+  border-radius:10px;
+  text-align:center;
+  overflow-wrap:anywhere;
+}
+.sponsor strong { display:block; color:var(--gold); margin-bottom:6px; }
+.sponsor a, a { color:var(--gold); }
+footer {
+  text-align:center;
+  color:var(--muted);
+  padding:24px 12px;
+  font-size:12px;
+}
+@media(max-width:420px) {
+  .candidate { gap:8px; padding:9px; }
+  .candidate img { width:48px; height:48px; }
+  .candidate button { min-width:65px; padding:10px 8px; font-size:12px; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="brand">KULZZY RADIO NETWORK PRESENTS</div>
+  <h1>⚽ KULZZY FOOTBALL FAN RANKINGS</h1>
+  <p>Football passion. Fan voices. Daily rankings.</p>
+</header>
+
+<main>
+  <section class="card">
+    <div class="eyebrow">TODAY'S FOOTBALL CHALLENGE</div>
+    <div class="category" id="categoryTitle">Loading today's category…</div>
+    <p class="small" id="dayText"></p>
+    <div class="status" id="authStatus">Connecting your voting account…</div>
+    <p class="small">
+      Each signed-in account may vote once per day. The daily voting date
+      follows West Africa Time (WAT), resetting at midnight.
+    </p>
+  </section>
+
+  <section class="card">
+    <div class="row">
+      <div>
+        <div class="eyebrow">LIVE DAILY RANKINGS</div>
+        <h2>Fan leaderboard</h2>
+      </div>
+      <button id="refreshBtn">Refresh</button>
+    </div>
+    <div id="candidateList">Loading nominees…</div>
+  </section>
+
+  <section class="card">
+    <div class="eyebrow">HALL OF FAME</div>
+    <h2>Previous daily winners</h2>
+    <div id="history" class="small">
+      Previous results will appear here when available.
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="eyebrow">OFFICIAL SPONSORS</div>
+    <h2>Daily &amp; weekly sponsors</h2>
+    <div id="sponsors" class="sponsors">
+      <p class="small">Official sponsors will appear here.</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <p class="small">
+      Kulzzy Radio Network · Celebrating Lives Everyday<br>
+      Administrator: <a href="admin.html">Open Admin Panel</a>
+    </p>
+  </section>
+</main>
+
+<footer>KULZZY FOOTBALL FAN RANKINGS</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<script>
+(function () {
+"use strict";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDS_m5jMk1iQgHIo14S9_sTxnmUrKE9qIo",
+  authDomain: "kulzzy-football-fan-rankings.firebaseapp.com",
+  databaseURL: "https://kulzzy-football-fan-rankings-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "kulzzy-football-fan-rankings",
+  storageBucket: "kulzzy-football-fan-rankings.firebasestorage.app",
+  messagingSenderId: "860619759967",
+  appId: "1:860619759967:web:dc033eeaa98b1fe50b96ea",
+  measurementId: "G-JH6F5RKY15"
+};
+
+const categories = [
+  {id:"club",name:"Most Loved Football Club"},
+  {id:"player",name:"Fan Favourite Football Player"},
+  {id:"striker",name:"Best Striker in Football"},
+  {id:"goalkeeper",name:"Best Goalkeeper"},
+  {id:"fanbase",name:"Most Passionate Football Fanbase"},
+  {id:"rivalry",name:"Greatest Football Rivalry"},
+  {id:"legend",name:"Greatest Football Legend"},
+  {id:"youngstar",name:"Best Young Football Star"},
+  {id:"coach",name:"Best Football Coach"},
+  {id:"national",name:"Favourite National Team"},
+  {id:"african",name:"Africa's Favourite Football Club"},
+  {id:"women",name:"Favourite Women's Football Star"},
+  {id:"midfielder",name:"Best Midfielder"},
+  {id:"defender",name:"Best Defender"}
+];
+
+let db;
+let uid = null;
+let dayKey = "";
+let category;
+let allCandidates = {};
+let allVotes = {};
+let alreadyVoted = false;
+let loadingVote = false;
+
+function watDate() {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone:"Africa/Lagos",
+    year:"numeric",
+    month:"2-digit",
+    day:"2-digit"
+  }).formatToParts(new Date());
+
+  const values = {};
+  parts.forEach(p => values[p.type] = p.value);
+  return values.year + "-" + values.month + "-" + values.day;
+}
+
+function escapeHtml(value) {
+  return String(value || "").replace(/[&<>"']/g, function (c) {
+    return {
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    }[c];
+  });
+}
+
+function setStatus(message) {
+  document.getElementById("authStatus").textContent = message;
+}
+
+function getCategoryForDate(dateString) {
+  const parts = dateString.split("-").map(Number);
+  const current = Date.UTC(parts[0], parts[1] - 1, parts[2]);
+  const start = Date.UTC(2026, 0, 1);
+  const elapsedDays = Math.floor((current - start) / 86400000);
+  const index = ((elapsedDays % categories.length) + categories.length) % categories.length;
+  return categories[index];
+}
+
+function updateDateAndCategory() {
+  dayKey = watDate();
+  category = getCategoryForDate(dayKey);
+  document.getElementById("categoryTitle").textContent = category.name;
+  document.getElementById("dayText").textContent =
+    "Voting date: " + dayKey + " (West Africa Time)";
+}
+
+function renderRankings() {
+  const container = document.getElementById("candidateList");
+  const candidates = allCandidates[category.id] || {};
+  const voteCounts = {};
+
+  Object.values(allVotes).forEach(function (vote) {
+    if (vote && vote.candidateId && vote.categoryId === category.id) {
+      voteCounts[vote.candidateId] = (voteCounts[vote.candidateId] || 0) + 1;
+    }
+  });
+
+  const ids = Object.keys(candidates).sort(function (a, b) {
+    return (voteCounts[b] || 0) - (voteCounts[a] || 0);
+  });
+
+  if (!ids.length) {
+    container.innerHTML =
+      '<p class="small">No nominees have been added to today’s category yet. Please check again later.</p>';
+    return;
+  }
+
+  const totalVotes = Object.values(voteCounts).reduce((sum, n) => sum + n, 0);
+
+  container.innerHTML = ids.map(function (id, index) {
+    const nominee = candidates[id] || {};
+    const count = voteCounts[id] || 0;
+    const percentage = totalVotes ? Math.round(count * 100 / totalVotes) : 0;
+    const votedDisabled = alreadyVoted || !uid || loadingVote;
+
+    return `
+      <div class="candidate ${index === 0 && count > 0 ? "winner" : ""}">
+        <img src="${escapeHtml(nominee.photo)}" alt=""
+             onerror="this.style.display='none'">
+        <div class="details">
+          <h3>${index === 0 && count > 0 ? "🏆 " : ""}${escapeHtml(nominee.name)}</h3>
+          <p>${escapeHtml(nominee.description)} · ${count} vote${count === 1 ? "" : "s"}</p>
+          <div class="bar"><span style="width:${percentage}%"></span></div>
+        </div>
+        <button data-vote="${escapeHtml(id)}" ${votedDisabled ? "disabled" : ""}>
+          ${alreadyVoted ? "Voted" : "Vote"}
+        </button>
+      </div>`;
+  }).join("");
+
+  container.querySelectorAll("[data-vote]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      castVote(button.getAttribute("data-vote"));
+    });
+  });
+}
+
+async function castVote(candidateId) {
+  if (!uid || loadingVote) return;
+
+  if (alreadyVoted) {
+    setStatus("Your vote has already been recorded for today. Please return tomorrow.");
+    return;
+  }
+
+  loadingVote = true;
+  renderRankings();
+  const voteRef = db.ref("dailyVotes/" + dayKey + "/" + uid);
+
+  try {
+    // Check first for a clearer message; Firebase rules enforce the actual one-write limit.
+    const existing = await voteRef.once("value");
+    if (existing.exists()) {
+      alreadyVoted = true;
+      setStatus("Your vote has already been recorded for today. Please return tomorrow.");
+      renderRankings();
+      return;
+    }
+
+    await voteRef.set({
+      candidateId: candidateId,
+      categoryId: category.id,
+      day: dayKey,
+      createdAt: firebase.database.ServerValue.TIMESTAMP
+    });
+
+    alreadyVoted = true;
+    setStatus("Your vote has been recorded. Thank you for taking part!");
+    await loadData();
+  } catch (error) {
+    if (error.code === "PERMISSION_DENIED") {
+      // Another tab/device may have already voted. Verify the stored record.
+      try {
+        const existing = await voteRef.once("value");
+        if (existing.exists()) {
+          alreadyVoted = true;
+          setStatus("Only one vote is allowed per account each day.");
+        } else {
+          setStatus("Voting is not open yet. The administrator must publish the Firebase database rules.");
+        }
+      } catch (_) {
+        setStatus("Voting is not available until Firebase database rules are published.");
+      }
+    } else {
+      setStatus("Vote could not be recorded. Check your connection and try again.");
+    }
+  } finally {
+    loadingVote = false;
+    renderRankings();
+  }
+}
+
+async function loadData() {
+  updateDateAndCategory();
+
+  try {
+    const results = await Promise.all([
+      db.ref("candidates").once("value"),
+      db.ref("dailyVotes/" + dayKey).once("value"),
+      db.ref("sponsors").once("value"),
+      db.ref("dailyVotes").once("value")
+    ]);
+
+    allCandidates = results[0].val() || {};
+    allVotes = results[1].val() || {};
+
+    const ownVote = uid
+      ? await db.ref("dailyVotes/" + dayKey + "/" + uid).once("value")
+      : null;
+
+    alreadyVoted = !!(ownVote && ownVote.exists());
+    renderRankings();
+
+    setStatus(alreadyVoted
+      ? "Your vote has already been recorded for today. Please return tomorrow."
+      : "Your voting account is ready. Choose your favourite nominee.");
+
+    const sponsors = results[2].val() || {};
+    const sponsorList = Object.values(sponsors).filter(s => s && s.name);
+
+    document.getElementById("sponsors").innerHTML = sponsorList.length
+      ? sponsorList.map(function (s) {
+          const link = String(s.link || "");
+          const safeLink = /^https?:\/\//i.test(link) ? link : "";
+          return '<div class="sponsor"><strong>' + escapeHtml(s.name) +
+            '</strong><span class="small">' + escapeHtml(s.type || "Official sponsor") +
+            '</span>' + (safeLink ? '<br><a href="' + escapeHtml(safeLink) +
+            '" target="_blank" rel="noopener">Sponsor details</a>' : '') + '</div>';
+        }).join("")
+      : '<p class="small">Official daily and weekly sponsors will appear here.</p>';
+
+    renderHistory(results[3].val() || {});
+  } catch (error) {
+    setStatus("Rankings are unavailable. Confirm that Firebase database rules have been published.");
+    document.getElementById("candidateList").textContent =
+      "The database is not ready or its rules have not been published.";
+  }
+}
+
+function renderHistory(allDays) {
+  const previousDays = Object.keys(allDays)
+    .filter(d => d < dayKey)
+    .sort()
+    .reverse()
+    .slice(0, 14);
+
+  let html = "";
+
+  previousDays.forEach(function (date) {
+    const votes = allDays[date] || {};
+    const totals = {};
+
+    Object.values(votes).forEach(function (v) {
+      if (v && v.candidateId) {
+        const key = v.categoryId + "|" + v.candidateId;
+        totals[key] = (totals[key] || 0) + 1;
+      }
+    });
+
+    const winnerKey = Object.keys(totals).sort((a, b) => totals[b] - totals[a])[0];
+    if (!winnerKey) return;
+
+    const split = winnerKey.split("|");
+    const categoryId = split[0];
+    const candidateId = split[1];
+    const nominee = ((allCandidates[categoryId] || {})[candidateId]) || {};
+    const categoryName = (categories.find(c => c.id === categoryId) || {}).name || categoryId;
+
+    html += '<div style="padding:9px 0;border-bottom:1px solid #263b60"><strong>' +
+      escapeHtml(date) + '</strong> — ' + escapeHtml(nominee.name || "Nominee") +
+      '<br><span>' + escapeHtml(categoryName) + ' · ' +
+      totals[winnerKey] + ' votes</span></div>';
+  });
+
+  document.getElementById("history").innerHTML =
+    html || "No previous daily voting results are available yet.";
+}
+
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+  updateDateAndCategory();
+
+  firebase.auth().signInAnonymously().catch(function () {
+    setStatus("Could not create a voting session. Please reload and try again.");
+  });
+
+  firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+      uid = user.uid;
+      loadData();
+    }
+  });
+
+  document.getElementById("refreshBtn").addEventListener("click", loadData);
+
+  // Refresh the WAT date if this page stays open across midnight.
+  setInterval(function () {
+    if (watDate() !== dayKey) {
+      alreadyVoted = false;
+      loadData();
+    }
+  }, 60000);
+
+} catch (error) {
+  setStatus("Firebase setup error. Check the configuration in index.html.");
+}
+})();
+</script>
+</body>
+</html>
