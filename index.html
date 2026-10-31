@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#06122a">
+<meta name="description" content="Join the Kulzzy Radio global football fan challenge. Select your favourite football club, vote daily and follow the live rankings.">
 <title>Most Loved Football Club of Today | Kulzzy Radio</title>
 
 <style>
@@ -12,10 +13,12 @@
   --panel:#0d2042;
   --gold:#ffd700;
   --white:#fff;
-  --muted:#b8c4d9;
+  --muted:#c0cce0;
   --border:#2a4168;
+  --green:#19a765;
 }
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{
   margin:0;
   min-height:100vh;
@@ -25,9 +28,9 @@ body{
 }
 header{
   text-align:center;
-  padding:20px 14px;
+  padding:25px 14px;
   background:#040d1d;
-  border-bottom:1px solid var(--border);
+  border-bottom:2px solid var(--gold);
 }
 .brand{
   color:var(--gold);
@@ -37,18 +40,18 @@ header{
 }
 h1{
   color:var(--gold);
-  font-size:clamp(23px,5.5vw,36px);
+  font-size:clamp(25px,6vw,40px);
   line-height:1.2;
-  margin:12px 0;
+  margin:13px 0;
 }
-header p{color:var(--muted);margin:0}
-main{max-width:1000px;margin:auto;padding:14px}
+header p{color:var(--muted);margin:0;line-height:1.6}
+main{max-width:1050px;margin:auto;padding:14px}
 .card{
   background:var(--panel);
   border:1px solid #23395f;
   border-radius:16px;
-  padding:16px;
-  margin:14px 0;
+  padding:18px;
+  margin:15px 0;
   box-shadow:0 8px 24px #0002;
 }
 .hero{
@@ -60,38 +63,68 @@ main{max-width:1000px;margin:auto;padding:14px}
     linear-gradient(135deg,#07152d,#102c50 50%,#06122a);
 }
 .hero-art{
-  padding:28px 14px 22px;
+  padding:32px 16px 25px;
   border-bottom:1px solid #3a4e70;
   background:
     radial-gradient(ellipse at 50% 110%,#ffd70022,transparent 60%),
     linear-gradient(135deg,#0a1b37,#102d52,#06122a);
 }
-.ball{font-size:54px;line-height:1.3}
+.ball{font-size:clamp(45px,10vw,70px);line-height:1.4}
 .hero h2{
   color:var(--gold);
-  font-size:clamp(23px,5vw,34px);
-  margin:8px 0;
+  font-size:clamp(25px,5vw,36px);
+  margin:12px 0;
 }
-.hero .tagline{font-size:16px;color:#fff}
-.hero-bottom{padding:16px}
+.hero .tagline{font-size:17px;color:#fff;line-height:1.7}
+.hero-bottom{padding:18px}
 .eyebrow{
   color:var(--gold);
   font-size:12px;
   letter-spacing:1.3px;
   font-weight:bold;
 }
-h2{margin:8px 0 14px}
-.small{font-size:13px;color:var(--muted);line-height:1.6}
+h2{margin:9px 0 14px;line-height:1.3}
+h3{line-height:1.4}
+p{line-height:1.75}
+.small{font-size:13px;color:var(--muted);line-height:1.8}
 .status{
-  padding:12px;
+  padding:13px;
   border-radius:10px;
   background:#07162f;
   color:var(--muted);
   font-size:14px;
   margin-top:10px;
   overflow-wrap:anywhere;
-  line-height:1.5;
+  line-height:1.7;
+  border:1px solid #263d60;
 }
+button,select{
+  font:inherit;
+}
+button{
+  background:var(--gold);
+  color:var(--navy);
+  border:0;
+  border-radius:10px;
+  padding:13px 16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:disabled{opacity:.55;cursor:not-allowed}
+button:focus-visible,select:focus-visible{
+  outline:3px solid #fff;
+  outline-offset:3px;
+}
+input,select{
+  width:100%;
+  padding:14px;
+  margin:8px 0;
+  border-radius:10px;
+  border:1px solid #50668b;
+  background:#07162f;
+  color:#fff;
+}
+select option{background:#07162f;color:#fff}
 .row{
   display:flex;
   gap:10px;
@@ -99,58 +132,95 @@ h2{margin:8px 0 14px}
   justify-content:space-between;
   flex-wrap:wrap;
 }
-button{
-  background:var(--gold);
-  color:var(--navy);
-  border:0;
-  border-radius:10px;
-  padding:12px 15px;
-  font-weight:bold;
-  cursor:pointer;
-}
-button:disabled{
-  opacity:.55;
-  cursor:not-allowed;
-}
-button.vote-selected{
-  background:#1e9b62;
-  color:#fff;
-  opacity:1;
-}
-button.vote-used{
-  background:#52617a;
-  color:#fff;
-}
-input,select{
-  width:100%;
-  padding:13px;
-  margin:8px 0;
-  border-radius:10px;
-  border:1px solid #50668b;
+.selection-box{
+  border:1px solid #425a80;
   background:#07162f;
-  color:#fff;
-  font:inherit;
+  border-radius:14px;
+  padding:15px;
+  margin-top:14px;
 }
-.search-row{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:8px;
+.selection-box label{
+  display:block;
+  font-weight:bold;
+  color:var(--gold);
+  margin-bottom:8px;
+}
+.vote-action{
+  width:100%;
+  margin-top:8px;
+  font-size:16px;
+  padding:16px;
+}
+.notice{
+  background:#10294c;
+  border-left:4px solid var(--gold);
+  padding:13px;
+  border-radius:8px;
+  margin:12px 0;
+  color:#e6edf8;
+  line-height:1.8;
+  font-size:14px;
+}
+.live-label{
+  display:inline-flex;
   align-items:center;
+  gap:7px;
+  color:#91f0ba;
+  font-weight:bold;
+  font-size:12px;
 }
-.search-row input{min-width:0}
+.live-dot{
+  width:9px;
+  height:9px;
+  display:inline-block;
+  border-radius:50%;
+  background:#26df78;
+  box-shadow:0 0 10px #26df78;
+}
+.top-three{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-top:15px;
+}
+.top-card{
+  text-align:center;
+  padding:15px 8px;
+  background:#081831;
+  border:1px solid #405577;
+  border-radius:13px;
+  min-width:0;
+}
+.top-card.first{border:2px solid var(--gold)}
+.top-card .medal{font-size:30px}
+.top-card h3{
+  color:var(--gold);
+  font-size:14px;
+  overflow-wrap:anywhere;
+  margin:9px 0;
+}
+.top-card .votes{
+  font-size:20px;
+  font-weight:bold;
+}
+.top-card .position{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:6px;
+}
 .candidate{
   display:flex;
   gap:12px;
   align-items:center;
   margin:11px 0;
-  padding:12px;
+  padding:13px;
   border:1px solid var(--border);
   border-radius:13px;
   background:#081831;
 }
 .club-badge{
-  width:58px;
-  height:58px;
+  width:52px;
+  height:52px;
   flex-shrink:0;
   border-radius:50%;
   display:flex;
@@ -158,12 +228,12 @@ input,select{
   justify-content:center;
   background:linear-gradient(145deg,#173967,#07162f);
   border:1px solid #526c93;
-  font-size:28px;
+  font-size:26px;
 }
 .details{flex:1;min-width:0}
 .details h3{
   margin:0 0 6px;
-  font-size:16px;
+  font-size:15px;
   overflow-wrap:anywhere;
 }
 .details p{margin:0;color:var(--muted);font-size:13px}
@@ -172,17 +242,41 @@ input,select{
   background:#253858;
   border-radius:10px;
   overflow:hidden;
-  margin-top:8px;
+  margin-top:9px;
 }
-.bar span{display:block;height:100%;background:var(--gold)}
+.bar span{
+  display:block;
+  height:100%;
+  background:var(--gold);
+  transition:width .4s ease;
+}
 .winner{border-color:var(--gold)}
+.vote-selected{background:var(--green);color:#fff}
+.vote-used{background:#52617a;color:#fff}
+.info-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.info-item{
+  padding:15px;
+  background:#081831;
+  border:1px solid #263d60;
+  border-radius:12px;
+}
+.info-item strong{
+  display:block;
+  color:var(--gold);
+  margin-bottom:8px;
+}
+.info-item p{margin:0;color:#d2dced;font-size:14px}
 .sponsors{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
   gap:10px;
 }
 .sponsor{
-  padding:12px;
+  padding:14px;
   border:1px solid #425574;
   border-radius:10px;
   text-align:center;
@@ -198,17 +292,24 @@ input,select{
 footer{
   text-align:center;
   color:var(--muted);
-  padding:24px 12px;
+  padding:28px 12px;
   font-size:12px;
+  line-height:1.8;
+  background:#040d1d;
+  border-top:1px solid var(--border);
 }
-@media(max-width:460px){
+@media(max-width:520px){
   main{padding:9px}
-  .card{padding:12px}
-  .candidate{gap:8px;padding:9px}
-  .club-badge{width:46px;height:46px;font-size:23px}
-  .candidate button{padding:10px;font-size:11px}
-  .search-row{grid-template-columns:1fr}
-  .search-row button{width:100%}
+  .card{padding:13px}
+  .candidate{gap:8px;padding:10px}
+  .club-badge{width:42px;height:42px;font-size:22px}
+  .top-three{gap:6px}
+  .top-card{padding:12px 5px}
+  .top-card h3{font-size:12px}
+  .top-card .votes{font-size:17px}
+  .top-card .medal{font-size:25px}
+  .info-grid{grid-template-columns:1fr}
+  .row button{padding:11px}
 }
 </style>
 </head>
@@ -218,81 +319,271 @@ footer{
   <div class="brand">KULZZY RADIO NETWORK PRESENTS</div>
   <h1>⚽ MOST LOVED FOOTBALL CLUB OF TODAY</h1>
   <p>Your club. Your voice. Your vote.</p>
+  <p>One global football community. Thousands of passionate supporters.</p>
 </header>
 
 <main>
+
   <section class="card hero">
     <div class="hero-art">
       <div class="ball">⚽ 🏆 ⚽</div>
       <div class="eyebrow">THE GLOBAL FOOTBALL FAN CHALLENGE</div>
-      <h2>Most Loved Football Club of Today</h2>
-      <p class="tagline">From Africa to the world — celebrate your club!</p>
-    </div>
-    <div class="hero-bottom">
-      <div class="eyebrow">PERMANENT FOOTBALL CATEGORY</div>
-      <p class="small" id="dayText"></p>
-      <div class="status" id="authStatus">Connecting your voting account…</div>
-      <p class="small">
-        Each signed-in account may vote once per day. Voting resets at
-        midnight West Africa Time (WAT).
+      <h2>Which Football Club Has Your Heart?</h2>
+      <p class="tagline">
+        From Africa to Europe, Asia to the Americas, football brings people
+        together. Now you can show the world which club you love most.
       </p>
     </div>
+    <div class="hero-bottom">
+      <div class="eyebrow">TODAY'S GLOBAL FAN COMPETITION</div>
+      <p id="dayText" class="small"></p>
+      <div class="status" id="authStatus" aria-live="polite">
+        Connecting your voting account…
+      </div>
+      <p class="small">
+        Your vote supports your chosen club in the Kulzzy Radio fan rankings.
+        The daily voting period follows West Africa Time (WAT), resetting
+        at midnight.
+      </p>
+    </div>
+  </section>
+
+  <section class="card" id="voteSection">
+    <div class="eyebrow">YOUR VOICE COUNTS</div>
+    <h2>Select Your Favourite Club</h2>
+    <p>
+      You do not need to type a club's name. Simply open the selection box,
+      scroll through the football clubs in the directory, choose your
+      favourite, and press the Vote button.
+    </p>
+
+    <div class="selection-box">
+      <label for="clubSelect">⚽ Choose a football club</label>
+      <select id="clubSelect" aria-label="Select your favourite football club">
+        <option value="">Loading football clubs…</option>
+      </select>
+
+      <p id="selectedClubInfo" class="small">
+        Select a club from the list above.
+      </p>
+
+      <button id="voteBtn" class="vote-action" type="button" disabled>
+        SELECT A CLUB TO VOTE
+      </button>
+    </div>
+
+    <div class="notice">
+      <strong>Voting rule:</strong> Each signed-in account may cast one vote
+      per day. Please select carefully before voting. Once your vote has
+      been accepted, you cannot change it until the next voting day.
+    </div>
+
+    <p class="small">
+      Can't see your club? The directory is maintained by the competition
+      administrator. Newly added clubs will appear here after the directory
+      updates.
+    </p>
+  </section>
+
+  <section class="card">
+    <div class="row">
+      <div>
+        <div class="eyebrow">THE RACE FOR NUMBER ONE</div>
+        <h2>Today's Top 3 Clubs</h2>
+      </div>
+      <div class="live-label"><span class="live-dot"></span> LIVE UPDATES</div>
+    </div>
+
+    <p>
+      The clubs below currently occupy the first three positions based on
+      the votes recorded for today's voting date. Every valid vote can
+      change the leaderboard.
+    </p>
+
+    <div id="topThree" class="top-three">
+      <div class="top-card">Loading rankings…</div>
+    </div>
+
+    <p id="rankingUpdated" class="small">
+      Connecting to live rankings…
+    </p>
   </section>
 
   <section class="card">
     <div class="row">
       <div>
         <div class="eyebrow">GLOBAL CLUB DIRECTORY</div>
-        <h2>Choose your football club</h2>
+        <h2>All Participating Clubs</h2>
       </div>
       <button id="refreshBtn" type="button">Refresh</button>
     </div>
 
-    <p class="small">
-      Search the directory, find your club and cast your vote.
-      The administrator manages the football club directory.
+    <p>
+      Browse the participating clubs below. This list is arranged by
+      current vote totals, with clubs receiving more votes appearing first.
+      You can return to the selection box above to cast your vote.
     </p>
-
-    <div class="search-row">
-      <input id="clubSearch" type="search"
-             placeholder="Search football clubs…"
-             aria-label="Search football clubs">
-      <button id="clearSearchBtn" type="button">Clear search</button>
-    </div>
 
     <div id="directoryCount" class="small">Loading football clubs…</div>
     <div id="candidateList">Loading football clubs…</div>
     <div id="moreStatus" class="small"></div>
     <button id="showMoreBtn" class="hidden" style="width:100%" type="button">
-      Show more clubs
+      Show More Clubs
     </button>
   </section>
 
   <section class="card">
-    <div class="eyebrow">LIVE DAILY RANKINGS</div>
-    <h2>Today's leaderboard</h2>
-    <p class="small">Clubs are ranked by votes recorded for today's WAT date.</p>
+    <div class="eyebrow">HOW THE RANKINGS WORK</div>
+    <h2>Today's Leaderboard</h2>
+    <p>
+      The leaderboard compares the number of valid votes received by each
+      participating football club during the current voting day. Clubs are
+      ordered from highest to lowest vote count.
+    </p>
+    <p class="small">
+      Rankings update when the database receives new votes. Clubs with equal
+      vote totals are displayed alphabetically. The rankings show voting
+      activity in this competition, not an official measurement of worldwide
+      football support.
+    </p>
     <div id="leaderboard">Loading leaderboard…</div>
   </section>
 
   <section class="card">
-    <div class="eyebrow">HALL OF FAME</div>
-    <h2>Previous daily winners</h2>
+    <div class="eyebrow">YESTERDAY'S CHAMPIONS. TOMORROW'S LEGENDS.</div>
+    <h2>Hall of Fame: Previous Daily Winners</h2>
+    <p>
+      Every voting day creates a new opportunity for a club to rise to the
+      top. Look back at previous daily results and celebrate the clubs that
+      led the rankings.
+    </p>
     <div id="history" class="small">
       Previous results will appear here when available.
     </div>
   </section>
 
   <section class="card">
+    <div class="eyebrow">FOOTBALL UNITES THE WORLD</div>
+    <h2>A Global Celebration of Football Fans</h2>
+    <p>
+      Football is more than a game. It is the excitement of match day, the
+      pride of wearing club colours, the friendships formed in the stands,
+      the celebrations after a great goal, and the conversations that continue
+      long after the final whistle.
+    </p>
+    <p>
+      Whether your club competes in England, Spain, Italy, Germany, France,
+      Nigeria, another African league, or anywhere else in the world, your
+      passion deserves a place in the conversation.
+    </p>
+    <p>
+      Kulzzy Radio's Most Loved Football Club of Today gives supporters a
+      shared space to express their loyalty and follow a daily fan-voting
+      competition. Invite fellow supporters to participate, choose your club,
+      and follow the changing positions throughout the day.
+    </p>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <strong>🌍 A Global Community</strong>
+        <p>
+          Football fans from different countries and backgrounds can support
+          the clubs they love through one shared voting platform.
+        </p>
+      </div>
+      <div class="info-item">
+        <strong>🗳️ Your Daily Vote</strong>
+        <p>
+          Select one participating club and cast your vote. Each authenticated
+          account is limited to one vote per voting day.
+        </p>
+      </div>
+      <div class="info-item">
+        <strong>🏆 The Top Three</strong>
+        <p>
+          Follow the leading clubs and see which teams are currently in first,
+          second, and third place in today's fan rankings.
+        </p>
+      </div>
+      <div class="info-item">
+        <strong>📊 Changing Rankings</strong>
+        <p>
+          Vote totals and positions can change as additional valid votes are
+          recorded during the day.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="eyebrow">PLAY FAIR. CELEBRATE FOOTBALL.</div>
+    <h2>Competition Rules and Fair Play</h2>
+    <p>
+      The purpose of this competition is to encourage football supporters to
+      participate, celebrate their favourite clubs, and enjoy a friendly
+      global fan challenge.
+    </p>
+    <p>
+      Each authenticated account is permitted one vote per day. The database
+      enforces the voting restriction. Do not attempt to manipulate results
+      or interfere with the platform.
+    </p>
+    <p>
+      The daily voting period follows West Africa Time. When a new voting day
+      begins, eligible accounts may participate again. The previous day's
+      votes remain part of the historical record.
+    </p>
+    <p>
+      The published results represent votes recorded by this platform. They
+      should not be confused with official football league standings,
+      professional club rankings, match results, or independently verified
+      worldwide fan-population figures.
+    </p>
+  </section>
+
+  <section class="card">
     <div class="eyebrow">OFFICIAL SPONSORS</div>
-    <h2>Daily &amp; weekly sponsors</h2>
+    <h2>Daily and Weekly Sponsors</h2>
+    <p>
+      The competition welcomes businesses and organisations interested in
+      connecting with football supporters. Official sponsor information
+      published by the administrator will appear below.
+    </p>
     <div id="sponsors" class="sponsors">
       <p class="small">Official sponsors will appear here.</p>
     </div>
   </section>
+
+  <section class="card">
+    <div class="eyebrow">STAY CONNECTED</div>
+    <h2>Keep Supporting Your Club</h2>
+    <p>
+      Return each day to participate in the latest voting round, follow the
+      top three clubs, and see how the daily rankings develop.
+    </p>
+    <p>
+      Share the competition with fellow football supporters and encourage
+      them to choose their favourite participating club. Every valid vote
+      contributes to the published daily totals.
+    </p>
+    <div class="notice">
+      <strong>Kulzzy Radio Network</strong><br>
+      Celebrating Lives Everyday — and celebrating the passion that makes
+      football special.
+    </div>
+    <button type="button" id="backToVoteBtn" style="width:100%">
+      ⚽ SELECT YOUR CLUB AND VOTE
+    </button>
+  </section>
+
 </main>
 
-<footer>KULZZY RADIO NETWORK · CELEBRATING LIVES EVERYDAY</footer>
+<footer>
+  <strong>KULZZY RADIO NETWORK</strong><br>
+  MOST LOVED FOOTBALL CLUB OF TODAY<br>
+  Your Club. Your Voice. Your Vote.<br>
+  Celebrating Lives Everyday.
+</footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -328,6 +619,11 @@ let alreadyVoted=false;
 let votedCandidateId=null;
 let loadingVote=false;
 let visibleCount=PAGE_SIZE;
+let listenersAttached=false;
+let todayVotesRef=null;
+let clubsRef=null;
+let sponsorsRef=null;
+let voteInProgress=false;
 
 function el(id){
   return document.getElementById(id);
@@ -364,7 +660,7 @@ function setStatus(message){
 function updateDate(){
   dayKey=watDate();
   el("dayText").textContent=
-    "Voting date: "+dayKey+" (West Africa Time)";
+    "Today's voting date: "+dayKey+" (West Africa Time)";
 }
 
 function getCounts(votes){
@@ -380,20 +676,109 @@ function getCounts(votes){
 }
 
 function getSortedClubs(){
-  const search=el("clubSearch").value.trim().toLowerCase();
   const counts=getCounts(todayVotes);
 
   return Object.entries(candidates)
-    .filter(([id,club])=>
-      club&&club.name&&
-      String(club.name).toLowerCase().includes(search)
-    )
+    .filter(([id,club])=>club&&club.name)
     .sort((a,b)=>{
-      const difference=
-        (counts[b[0]]||0)-(counts[a[0]]||0);
-
-      return difference||a[1].name.localeCompare(b[1].name);
+      const difference=(counts[b[0]]||0)-(counts[a[0]]||0);
+      return difference||String(a[1].name).localeCompare(String(b[1].name));
     });
+}
+
+function renderSelector(){
+  const select=el("clubSelect");
+  const previousValue=select.value;
+  const sorted=getSortedClubs();
+
+  if(!sorted.length){
+    select.innerHTML='<option value="">No clubs available yet</option>';
+    select.disabled=true;
+    el("selectedClubInfo").textContent=
+      "The administrator must add clubs to the football directory.";
+    updateVoteButton();
+    return;
+  }
+
+  select.innerHTML=
+    '<option value="">— Open this list and choose your club —</option>'+
+    sorted.map(([id,club])=>
+      '<option value="'+escapeHtml(id)+'">'+
+      escapeHtml(club.name)+
+      (club.country?" — "+escapeHtml(club.country):"")+
+      '</option>'
+    ).join("");
+
+  select.disabled=false;
+
+  if(previousValue&&candidates[previousValue]){
+    select.value=previousValue;
+  }
+
+  updateSelectedInfo();
+  updateVoteButton();
+}
+
+function updateSelectedInfo(){
+  const id=el("clubSelect").value;
+  const club=candidates[id];
+  const counts=getCounts(todayVotes);
+
+  if(!club){
+    el("selectedClubInfo").textContent=
+      "Select a club from the list above. You do not need to type its name.";
+    return;
+  }
+
+  el("selectedClubInfo").textContent=
+    club.name+" currently has "+(counts[id]||0)+
+    " vote"+((counts[id]||0)===1?"":"s")+" today.";
+}
+
+function updateVoteButton(){
+  const button=el("voteBtn");
+  const selectedId=el("clubSelect").value;
+
+  if(loadingVote||voteInProgress){
+    button.disabled=true;
+    button.textContent="SUBMITTING YOUR VOTE…";
+  }else if(!uid){
+    button.disabled=true;
+    button.textContent="CONNECTING VOTING ACCOUNT…";
+  }else if(alreadyVoted){
+    button.disabled=true;
+    button.textContent="YOU HAVE VOTED TODAY";
+  }else if(!selectedId||!candidates[selectedId]){
+    button.disabled=true;
+    button.textContent="SELECT A CLUB TO VOTE";
+  }else{
+    button.disabled=false;
+    button.textContent="⚽ VOTE FOR "+String(candidates[selectedId].name).toUpperCase();
+  }
+}
+
+function renderTopThree(){
+  const counts=getCounts(todayVotes);
+  const ranked=getSortedClubs().slice(0,3);
+  const medals=["🥇","🥈","🥉"];
+  const positions=["1ST PLACE","2ND PLACE","3RD PLACE"];
+
+  if(!ranked.length){
+    el("topThree").innerHTML=
+      '<div class="top-card">No clubs available yet.</div>';
+    return;
+  }
+
+  el("topThree").innerHTML=ranked.map(([id,club],index)=>{
+    const count=counts[id]||0;
+
+    return '<div class="top-card '+(index===0?"first":"")+'">'+
+      '<div class="medal">'+medals[index]+'</div>'+
+      '<h3>'+escapeHtml(club.name)+'</h3>'+
+      '<div class="votes">'+count+'</div>'+
+      '<div class="position">VOTES · '+positions[index]+'</div>'+
+    '</div>';
+  }).join("");
 }
 
 function renderClubs(){
@@ -403,56 +788,29 @@ function renderClubs(){
   const shown=all.slice(0,visibleCount);
 
   el("directoryCount").textContent=
-    all.length+" football club"+
-    (all.length===1?"":"s")+
-    (el("clubSearch").value.trim()?" found":" in the directory");
+    all.length+" participating football club"+(all.length===1?"":"s");
 
   if(!shown.length){
     container.innerHTML=
-      '<p class="small">'+
-      (Object.keys(candidates).length
-        ?"No clubs match your search. Try another name."
-        :"The club directory is empty. The administrator must update the football clubs directory.")+
-      "</p>";
-
+      '<p class="small">No clubs are available. The administrator must update the football club directory.</p>';
     el("showMoreBtn").classList.add("hidden");
     el("moreStatus").textContent="";
     return;
   }
 
-  container.innerHTML=shown.map(([id,club])=>{
+  container.innerHTML=shown.map(([id,club],index)=>{
     const count=counts[id]||0;
-    const isSelectedVote=alreadyVoted&&votedCandidateId===id;
+    const isVoted=alreadyVoted&&votedCandidateId===id;
+    const buttonClass=isVoted?"vote-selected":(alreadyVoted?"vote-used":"");
+    const buttonText=isVoted?"YOUR VOTE":(alreadyVoted?"VOTE USED TODAY":"VOTE");
+    const disabled=!uid||alreadyVoted||loadingVote||voteInProgress;
 
-    let buttonText="Vote";
-    let buttonClass="";
-    let disabled=false;
-
-    if(!uid||loadingVote){
-      disabled=true;
-    }
-
-    if(alreadyVoted){
-      disabled=true;
-
-      if(isSelectedVote){
-        buttonText="YOUR VOTE";
-        buttonClass="vote-selected";
-      }else{
-        buttonText="VOTE USED TODAY";
-        buttonClass="vote-used";
-      }
-    }
-
-    const country=club.country
-      ?escapeHtml(club.country)+" · "
-      :"";
-
-    return '<div class="candidate">'+
-      '<div class="club-badge" aria-hidden="true">⚽</div>'+
+    return '<div class="candidate '+(index===0&&count>0?"winner":"")+'">'+
+      '<div class="club-badge" aria-hidden="true">'+(index===0&&count>0?"🏆":"⚽")+'</div>'+
       '<div class="details">'+
         '<h3>'+escapeHtml(club.name)+'</h3>'+
-        '<p>'+country+count+' vote'+(count===1?"":"s")+'</p>'+
+        '<p>'+(club.country?escapeHtml(club.country)+" · ":"")+
+          count+' vote'+(count===1?"":"s")+'</p>'+
       '</div>'+
       '<button type="button" class="'+buttonClass+'" data-vote="'+
         escapeHtml(id)+'" '+(disabled?"disabled":"")+'>'+
@@ -468,33 +826,9 @@ function renderClubs(){
     remaining>0?remaining+" more clubs available.":"";
 }
 
-/*
-  Event delegation:
-  Only the specific Vote button that was tapped is handled.
-  Other club buttons cannot trigger this click handler.
-*/
-el("candidateList").addEventListener("click",function(event){
-  const button=event.target.closest("button[data-vote]");
-
-  if(!button||button.disabled)return;
-
-  event.preventDefault();
-  event.stopPropagation();
-
-  const candidateId=button.getAttribute("data-vote");
-
-  if(candidateId){
-    castVote(candidateId);
-  }
-});
-
 function renderLeaderboard(){
   const counts=getCounts(todayVotes);
-
-  const ranked=Object.entries(candidates)
-    .filter(([id,club])=>club&&club.name)
-    .sort((a,b)=>(counts[b[0]]||0)-(counts[a[0]]||0))
-    .slice(0,10);
+  const ranked=getSortedClubs().slice(0,10);
 
   if(!ranked.length){
     el("leaderboard").innerHTML=
@@ -508,99 +842,15 @@ function renderLeaderboard(){
     const count=counts[id]||0;
     const width=Math.round(count*100/max);
 
-    return '<div class="candidate '+
-      (index===0&&count>0?"winner":"")+'">'+
-      '<div class="club-badge">'+
-        (index===0&&count>0?"🏆":"⚽")+
-      '</div>'+
+    return '<div class="candidate '+(index===0&&count>0?"winner":"")+'">'+
+      '<div class="club-badge">'+(index===0&&count>0?"🏆":(index+1))+'</div>'+
       '<div class="details">'+
-        '<h3>'+(index+1)+". "+escapeHtml(club.name)+'</h3>'+
+        '<h3>'+escapeHtml(club.name)+'</h3>'+
         '<p>'+count+' vote'+(count===1?"":"s")+'</p>'+
         '<div class="bar"><span style="width:'+width+'%"></span></div>'+
       '</div>'+
     '</div>';
   }).join("");
-}
-
-async function castVote(candidateId){
-  if(!uid||loadingVote)return;
-
-  if(alreadyVoted){
-    setStatus(
-      "You have already voted today. Your selected club is marked YOUR VOTE."
-    );
-    return;
-  }
-
-  if(!candidates[candidateId]){
-    setStatus("That club is no longer in the directory. Refresh and try again.");
-    return;
-  }
-
-  loadingVote=true;
-  renderClubs();
-
-  const voteDay=watDate();
-  const voteRef=db.ref("dailyVotes/"+voteDay+"/"+uid);
-
-  setStatus("Submitting your vote for "+candidates[candidateId].name+"…");
-
-  try{
-    /*
-      Check whether this account already has a vote for this date.
-    */
-    const existing=await voteRef.once("value");
-
-    if(existing.exists()){
-      alreadyVoted=true;
-      votedCandidateId=existing.val().candidateId||null;
-
-      setStatus("You have already voted today. Only one vote per account is allowed.");
-      await loadData();
-      return;
-    }
-
-    /*
-      Save only the club that the user selected.
-      The Firebase rules remain responsible for enforcing one vote per day.
-    */
-    await voteRef.set({
-      candidateId:candidateId,
-      categoryId:CATEGORY_ID,
-      day:voteDay,
-      createdAt:firebase.database.ServerValue.TIMESTAMP
-    });
-
-    alreadyVoted=true;
-    votedCandidateId=candidateId;
-
-    setStatus(
-      "SUCCESS! Your vote for "+
-      candidates[candidateId].name+
-      " has been recorded. Thank you for supporting your club!"
-    );
-
-    await loadData();
-
-  }catch(error){
-    console.error("Football club vote failed:",error);
-
-    if(error&&error.code==="PERMISSION_DENIED"){
-      setStatus(
-        "Firebase rejected the vote. Check that this club exists at candidates/club/"+candidateId+
-        " and that the database rules are published."
-      );
-    }else{
-      setStatus(
-        "Your vote could not be confirmed. Check your internet connection and tap Refresh before trying again."
-      );
-    }
-
-  }finally{
-    loadingVote=false;
-    renderClubs();
-    renderLeaderboard();
-  }
 }
 
 function renderSponsors(){
@@ -622,7 +872,7 @@ function renderSponsors(){
           :"")+
       '</div>';
     }).join("")
-    :'<p class="small">Official daily and weekly sponsors will appear here.</p>';
+    :'<p class="small">Official sponsors will appear here.</p>';
 }
 
 function renderHistory(){
@@ -645,22 +895,188 @@ function renderHistory(){
     });
 
     const ranked=Object.entries(counts)
-      .sort((a,b)=>b[1]-a[1])[0];
+      .sort((a,b)=>b[1]-a[1]||
+        String(candidates[a[0]]?.name||"").localeCompare(
+          String(candidates[b[0]]?.name||"")
+        )
+      )[0];
 
     if(!ranked)return;
 
     const club=candidates[ranked[0]];
 
-    html+='<div style="padding:9px 0;border-bottom:1px solid #263b60">'+
+    html+='<div style="padding:11px 0;border-bottom:1px solid #263b60">'+
       '<strong>'+escapeHtml(date)+'</strong> — '+
       escapeHtml(club?club.name:"Club no longer in the current directory")+
-      '<br><span class="small">'+
-      CATEGORY_NAME+' · '+ranked[1]+' votes</span>'+
+      '<br><span class="small">'+CATEGORY_NAME+' · '+
+      ranked[1]+' votes</span>'+
     '</div>';
   });
 
   el("history").innerHTML=
-    html||"No previous daily voting results are available yet.";
+    html||"Previous daily winners will appear here when results are available.";
+}
+
+function renderAll(){
+  renderSelector();
+  renderTopThree();
+  renderClubs();
+  renderLeaderboard();
+  renderSponsors();
+  renderHistory();
+
+  el("rankingUpdated").textContent=
+    "Live database connection active · Last page update: "+
+    new Date().toLocaleTimeString("en-NG",{timeZone:"Africa/Lagos"});
+}
+
+async function castVote(candidateId){
+  if(!uid||loadingVote||voteInProgress)return;
+
+  if(alreadyVoted){
+    setStatus("You have already voted today. Please return tomorrow.");
+    updateVoteButton();
+    return;
+  }
+
+  if(!candidateId||!candidates[candidateId]){
+    setStatus("Please select a valid football club from the list.");
+    return;
+  }
+
+  loadingVote=true;
+  voteInProgress=true;
+  updateVoteButton();
+  renderClubs();
+
+  const voteDay=watDate();
+  const voteRef=db.ref("dailyVotes/"+voteDay+"/"+uid);
+
+  setStatus("Submitting your vote for "+candidates[candidateId].name+"…");
+
+  try{
+    const existing=await voteRef.once("value");
+
+    if(existing.exists()){
+      alreadyVoted=true;
+      votedCandidateId=existing.val().candidateId||null;
+      setStatus("You have already voted today. Only one vote per account is allowed.");
+      return;
+    }
+
+    await voteRef.set({
+      candidateId:candidateId,
+      categoryId:CATEGORY_ID,
+      day:voteDay,
+      createdAt:firebase.database.ServerValue.TIMESTAMP
+    });
+
+    alreadyVoted=true;
+    votedCandidateId=candidateId;
+
+    setStatus(
+      "SUCCESS! Your vote for "+candidates[candidateId].name+
+      " has been recorded. Thank you for supporting your club!"
+    );
+
+    el("clubSelect").value=candidateId;
+
+  }catch(error){
+    console.error("Football club vote failed:",error);
+
+    if(error&&error.code==="PERMISSION_DENIED"){
+      setStatus(
+        "Firebase rejected the vote. Check the club directory and database rules."
+      );
+    }else{
+      setStatus(
+        "Your vote could not be confirmed. Check your internet connection and refresh the page."
+      );
+    }
+
+  }finally{
+    loadingVote=false;
+    voteInProgress=false;
+    updateDate();
+    updateVoteButton();
+    renderAll();
+  }
+}
+
+function detachLiveListeners(){
+  if(clubsRef)clubsRef.off();
+  if(sponsorsRef)sponsorsRef.off();
+  if(todayVotesRef)todayVotesRef.off();
+
+  clubsRef=null;
+  sponsorsRef=null;
+  todayVotesRef=null;
+  listenersAttached=false;
+}
+
+function attachLiveListeners(){
+  if(!db||!uid||listenersAttached)return;
+
+  listenersAttached=true;
+
+  clubsRef=db.ref("candidates/club");
+  sponsorsRef=db.ref("sponsors");
+  todayVotesRef=db.ref("dailyVotes/"+dayKey);
+
+  clubsRef.on("value",snapshot=>{
+    candidates=snapshot.val()||{};
+    renderAll();
+  },error=>{
+    console.error("Club directory listener error:",error);
+    setStatus("Could not load clubs. Check your connection and Firebase permissions.");
+  });
+
+  sponsorsRef.on("value",snapshot=>{
+    sponsors=snapshot.val()||{};
+    renderSponsors();
+  },error=>{
+    console.error("Sponsor listener error:",error);
+  });
+
+  todayVotesRef.on("value",snapshot=>{
+    todayVotes=snapshot.val()||{};
+
+    const ownVote=uid?todayVotes[uid]||null:null;
+
+    if(ownVote){
+      alreadyVoted=true;
+      votedCandidateId=ownVote.candidateId||null;
+    }else if(!alreadyVoted){
+      votedCandidateId=null;
+    }
+
+    renderAll();
+
+    if(alreadyVoted){
+      setStatus(
+        "Your daily vote is recorded. Your selected club is marked YOUR VOTE."
+      );
+    }else if(!loadingVote&&!voteInProgress){
+      setStatus("Your voting account is ready. Select your favourite club and vote.");
+    }
+  },error=>{
+    console.error("Live voting listener error:",error);
+    setStatus("Live votes could not be loaded. Check Firebase database permissions.");
+  });
+
+  /*
+    Load historical records separately so a history-read problem
+    does not prevent the current club directory and voting controls
+    from working.
+  */
+  db.ref("dailyVotes").once("value").then(snapshot=>{
+    allDays=snapshot.val()||{};
+    renderHistory();
+  }).catch(error=>{
+    console.error("Voting history could not be loaded:",error);
+    el("history").textContent=
+      "Previous results are temporarily unavailable.";
+  });
 }
 
 async function loadData(){
@@ -669,55 +1085,72 @@ async function loadData(){
   updateDate();
 
   try{
-    const results=await Promise.all([
-      db.ref("candidates/club").once("value"),
-      db.ref("dailyVotes/"+dayKey).once("value"),
-      db.ref("sponsors").once("value"),
-      db.ref("dailyVotes").once("value")
-    ]);
+    const ownVote=await db.ref("dailyVotes/"+dayKey+"/"+uid).once("value");
 
-    candidates=results[0].val()||{};
-    todayVotes=results[1].val()||{};
-    sponsors=results[2].val()||{};
-    allDays=results[3].val()||{};
+    if(ownVote.exists()){
+      alreadyVoted=true;
+      votedCandidateId=ownVote.val().candidateId||null;
+    }else{
+      alreadyVoted=false;
+      votedCandidateId=null;
+    }
 
-    const ownVote=todayVotes[uid]||null;
-
-    alreadyVoted=!!ownVote;
-    votedCandidateId=ownVote&&ownVote.candidateId
-      ?ownVote.candidateId
-      :null;
-
-    renderClubs();
-    renderLeaderboard();
-    renderSponsors();
-    renderHistory();
-
-    setStatus(alreadyVoted
-      ?"You have already voted today. Your selected club is marked YOUR VOTE."
-      :"Your voting account is ready. Find your favourite club and vote.");
+    if(!listenersAttached){
+      attachLiveListeners();
+    }else{
+      renderAll();
+    }
 
   }catch(error){
-    console.error("Could not load football ranking data:",error);
+    console.error("Initial voting check failed:",error);
 
     setStatus(
-      "Rankings could not load. Check your internet connection and Firebase database rules."
+      "Could not check your voting status. Check your internet connection and Firebase database rules."
     );
-
-    el("candidateList").textContent=
-      "The football club directory could not be loaded. Tap Refresh to try again.";
   }
 }
 
-el("clubSearch").addEventListener("input",()=>{
-  visibleCount=PAGE_SIZE;
-  renderClubs();
+el("clubSelect").addEventListener("change",()=>{
+  updateSelectedInfo();
+  updateVoteButton();
 });
 
-el("clearSearchBtn").addEventListener("click",()=>{
-  el("clubSearch").value="";
-  visibleCount=PAGE_SIZE;
-  renderClubs();
+el("voteBtn").addEventListener("click",()=>{
+  const selectedId=el("clubSelect").value;
+
+  if(!selectedId){
+    setStatus("Please open the club list and select a football club first.");
+    return;
+  }
+
+  castVote(selectedId);
+});
+
+el("candidateList").addEventListener("click",event=>{
+  const button=event.target.closest("button[data-vote]");
+
+  if(!button||button.disabled)return;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  const selectedId=button.getAttribute("data-vote");
+
+  if(selectedId&&candidates[selectedId]){
+    el("clubSelect").value=selectedId;
+    updateSelectedInfo();
+    updateVoteButton();
+
+    el("voteSection").scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+
+    setStatus(
+      "Selected "+candidates[selectedId].name+
+      ". Confirm your selection in the box and press Vote."
+    );
+  }
 });
 
 el("showMoreBtn").addEventListener("click",()=>{
@@ -726,13 +1159,37 @@ el("showMoreBtn").addEventListener("click",()=>{
 });
 
 el("refreshBtn").addEventListener("click",async()=>{
-  el("refreshBtn").disabled=true;
+  const button=el("refreshBtn");
+  button.disabled=true;
+  button.textContent="Refreshing…";
 
   try{
+    updateDate();
+
+    if(watDate()!==dayKey){
+      detachLiveListeners();
+    }
+
     await loadData();
+
+    const historySnapshot=await db.ref("dailyVotes").once("value");
+    allDays=historySnapshot.val()||{};
+    renderHistory();
+
+  }catch(error){
+    console.error("Manual refresh failed:",error);
+    setStatus("Refresh failed. Check your connection and try again.");
   }finally{
-    el("refreshBtn").disabled=false;
+    button.disabled=false;
+    button.textContent="Refresh";
   }
+});
+
+el("backToVoteBtn").addEventListener("click",()=>{
+  el("voteSection").scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
 });
 
 try{
@@ -747,13 +1204,11 @@ try{
       loadData();
     }else{
       uid=null;
-      alreadyVoted=false;
-      votedCandidateId=null;
-
       setStatus("Connecting your voting account…");
 
       firebase.auth().signInAnonymously().catch(error=>{
         console.error("Anonymous sign-in failed:",error);
+
         setStatus(
           "Could not create a voting session. Confirm Anonymous sign-in is enabled in Firebase Authentication."
         );
@@ -762,16 +1217,28 @@ try{
   });
 
   /*
-    If the page remains open across midnight in Nigeria,
-    refresh the daily voting state for the new date.
+    Refresh the voting date if the page remains open through
+    midnight in Nigeria.
   */
   setInterval(()=>{
-    if(watDate()!==dayKey){
+    const newDate=watDate();
+
+    if(newDate!==dayKey){
+      detachLiveListeners();
+
+      dayKey=newDate;
       alreadyVoted=false;
       votedCandidateId=null;
-      loadData();
+      todayVotes={};
+      allDays={};
+
+      updateDate();
+
+      if(uid){
+        loadData();
+      }
     }
-  },60000);
+  },15000);
 
 }catch(error){
   console.error("Firebase setup error:",error);
