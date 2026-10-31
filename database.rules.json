@@ -1,0 +1,48 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "candidates": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email === 'dstnewz.ng@gmail.com'"
+    },
+
+    "sponsors": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email === 'dstnewz.ng@gmail.com'"
+    },
+
+    "dailyVotes": {
+      ".read": true,
+
+      "$day": {
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.hasChildren(['candidateId','categoryId','day','createdAt']) && newData.child('day').val() === $day && root.child('candidates').child(newData.child('categoryId').val()).child(newData.child('candidateId').val()).exists()",
+
+          ".validate": "newData.hasChildren(['candidateId','categoryId','day','createdAt'])",
+
+          "candidateId": {
+            ".validate": "newData.isString()"
+          },
+
+          "categoryId": {
+            ".validate": "newData.isString()"
+          },
+
+          "day": {
+            ".validate": "newData.isString()"
+          },
+
+          "createdAt": {
+            ".validate": "newData.isNumber()"
+          },
+
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
+    }
+  }
+}
