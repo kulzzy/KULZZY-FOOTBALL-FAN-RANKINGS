@@ -331,13 +331,137 @@ function activeClubs(){
     .sort((a,b)=>a.name.localeCompare(b.name));
 }
 
-function logoHTML(club,extraClass=""){
-  const url=safeURL(club.logo);
-  const cls=("club-logo "+extraClass).trim();
-  if(!url){
-    return '<div class="'+cls+' logo-fallback" role="img" aria-label="Club logo unavailable">⚽</div>';
+/* =====================================================
+   CLUB LOGOS
+   1. Use the saved Firebase logo first.
+   2. Otherwise look up the club on TheSportsDB.
+   3. Cache successful results on the device.
+   4. Replace the football placeholder when a badge loads.
+===================================================== */
+
+const logoLookupCache=new Map();
+const logoLookupInProgress=new Map();
+
+function cachedLogoFor(club){
+  if(club.logo&&safeURL(club.logo)){
+    return safeURL(club.logo);
   }
-  return '<img class="'+cls+'" src="'+esc(url)+'" alt="'+esc(club.name)+' logo" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\''+cls+' logo-fallback\',textContent:\'⚽\'}))">';
+
+  try{
+    const cached=localStorage.getItem("kulzzyClubLogo:"+club.id);
+    return cached&&safeURL(cached)?safeURL(cached):"";
+  }catch(e){
+    return "";
+  }
+}
+
+async function lookupClubLogo(club){
+  const known=cachedLogoFor(club);
+  if(known)return known;
+
+  if(logoLookupCache.has(club.id)){
+    return logoLookupCache.get(club.id);
+  }
+
+  if(logoLookupInProgress.has(club.id)){
+    return logoLookupInProgress.get(club.id);
+  }
+
+  const task=(async()=>{
+    try{
+      const endpoint=
+        "https://www.thesportsdb.com/api/v1/json/123/searchteams.php?t="+
+        encodeURIComponent(club.name);
+
+      const response=await fetch(endpoint);
+      if(!response.ok)throw new Error("Club logo lookup failed");
+
+      const data=await response.json();
+      const teams=Array.isArray(data.teams)?data.teams:[];
+      const target=club.name.trim().toLowerCase();
+
+      const match=
+        teams.find(team=>
+          String(team.strTeam||"").trim().toLowerCase()===target
+        )||
+        teams.find(team=>{
+          const teamName=String(team.strTeam||"").trim().toLowerCase();
+          return teamName&&(teamName.includes(target)||target.includes(teamName));
+        });
+
+      const logo=match&&(
+        match.strTeamBadge||
+        match.strTeamLogo||
+        match.strTeamBanner
+      )||"";
+
+      const valid=safeURL(logo);
+      logoLookupCache.set(club.id,valid);
+
+      if(valid){
+        try{
+          localStorage.setItem("kulzzyClubLogo:"+club.id,valid);
+        }catch(e){}
+      }
+
+      return valid;
+    }catch(error){
+      logoLookupCache.set(club.id,"");
+      return "";
+    }finally{
+      logoLookupInProgress.delete(club.id);
+    }
+  })();
+
+  logoLookupInProgress.set(club.id,task);
+  return task;
+}
+
+function logoHTML(club,extraClass=""){
+  const url=cachedLogoFor(club);
+  const cls=("club-logo "+extraClass).trim();
+
+  if(url){
+    return '<img class="'+cls+
+      '" src="'+esc(url)+
+      '" alt="'+esc(club.name)+
+      ' logo" loading="lazy" referrerpolicy="no-referrer" '+
+      'onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement(\\'div\\'),{className:\\''+
+      cls+
+      ' logo-fallback\\',textContent:\\'⚽\\'}))">';
+  }
+
+  const placeholder=
+    '<div class="'+cls+
+    ' logo-fallback" role="img" aria-label="'+esc(club.name)+
+    ' logo loading" data-club-logo-id="'+esc(club.id)+'">⚽</div>';
+
+  lookupClubLogo(club).then(found=>{
+    if(!found)return;
+
+    document.querySelectorAll('[data-club-logo-id]').forEach(node=>{
+      if(node.getAttribute("data-club-logo-id")!==String(club.id))return;
+
+      const img=document.createElement("img");
+      img.className=node.className.replace("logo-fallback","").trim();
+      img.src=found;
+      img.alt=club.name+" logo";
+      img.loading="lazy";
+      img.referrerPolicy="no-referrer";
+
+      img.onerror=function(){
+        this.onerror=null;
+        const fallback=document.createElement("div");
+        fallback.className=img.className+" logo-fallback";
+        fallback.textContent="⚽";
+        this.replaceWith(fallback);
+      };
+
+      node.replaceWith(img);
+    });
+  });
+
+  return placeholder;
 }
 
 function clubMeta(club){
@@ -367,17 +491,20 @@ function renderSelect(){
     selectedClubId="";
     select.value="";
   }
+
   renderPreview();
   updateVoteButton();
 }
 
 function renderPreview(){
   const club=clubs[selectedClubId];
+
   if(!club||!club.active){
     $("selectedClubPreview").innerHTML=
       '<div class="empty">Select a club to view its badge.</div>';
     return;
   }
+
   $("selectedClubPreview").innerHTML=
     logoHTML(club)+
     '<div><div class="club-name">'+esc(club.name)+'</div>'+
@@ -387,34 +514,41 @@ function renderPreview(){
 function voteTotals(voteData){
   const totals={};
   Object.keys(clubs).forEach(id=>totals[id]=0);
+
   Object.values(voteData||{}).forEach(v=>{
     if(v&&v.categoryId==="club"&&v.candidateId&&
        Object.prototype.hasOwnProperty.call(totals,v.candidateId)){
       totals[v.candidateId]++;
     }
   });
+
   return totals;
 }
 
 function renderTopThree(){
   const container=$("topThree");
   const totals=voteTotals(todayVotes);
+
   const ranked=activeClubs().sort((a,b)=>
-    (totals[b.id]||0)-(totals[a.id]||0)||a.name.localeCompare(b.name)
+    (totals[b.id]||0)-(totals[a.id]||0)||
+    a.name.localeCompare(b.name)
   ).slice(0,3);
 
   if(!ranked.length){
-    container.innerHTML='<div class="empty">Clubs will appear here when published by the administrator.</div>';
+    container.innerHTML=
+      '<div class="empty">Clubs will appear here when published by the administrator.</div>';
     return;
   }
 
   const medals=["🥇","🥈","🥉"];
+
   container.innerHTML=ranked.map((club,i)=>(
     '<div class="top-card '+(i===0?"first":"")+'">'+
     '<span class="medal">'+medals[i]+'</span>'+
     logoHTML(club)+
     '<div class="club-name">'+esc(club.name)+'</div>'+
-    (club.country?'<small class="club-meta">'+esc(club.country)+'</small>':"")+
+    (club.country?
+      '<small class="club-meta">'+esc(club.country)+'</small>':"")+
     '<div class="vote-count">'+(totals[club.id]||0)+' votes</div>'+
     '</div>'
   )).join("");
@@ -422,17 +556,23 @@ function renderTopThree(){
 
 function renderHistory(){
   const container=$("history");
-  const dates=Object.keys(allVotes||{}).filter(d=>d!==dayKey)
-    .sort((a,b)=>b.localeCompare(a)).slice(0,7);
+
+  const dates=Object.keys(allVotes||{})
+    .filter(d=>d!==dayKey)
+    .sort((a,b)=>b.localeCompare(a))
+    .slice(0,7);
 
   if(!dates.length){
-    container.innerHTML='<div class="empty">Previous results will appear here after voting days have ended.</div>';
+    container.innerHTML=
+      '<div class="empty">Previous results will appear here after voting days have ended.</div>';
     return;
   }
 
   let html="";
+
   dates.forEach(date=>{
     const totals=voteTotals(allVotes[date]);
+
     const ranked=Object.keys(totals)
       .map(id=>({id,club:clubs[id],votes:totals[id]}))
       .filter(x=>x.club&&x.votes>0)
@@ -440,21 +580,30 @@ function renderHistory(){
       .slice(0,3);
 
     if(!ranked.length)return;
+
     html+='<div class="history-day">'+esc(date)+'</div>';
+
     ranked.forEach((item,i)=>{
       html+='<div class="history-row">'+logoHTML(item.club)+
         '<div class="club-name">'+(i+1)+'. '+esc(item.club.name)+
-        (item.club.country?'<small class="club-meta">'+esc(item.club.country)+'</small>':"")+
+        (item.club.country?
+          '<small class="club-meta">'+esc(item.club.country)+'</small>':"")+
         '</div><span class="vote-count">'+item.votes+' votes</span></div>';
     });
   });
-  container.innerHTML=html||'<div class="empty">No previous results yet.</div>';
+
+  container.innerHTML=html||
+    '<div class="empty">No previous results yet.</div>';
 }
 
 function renderSponsors(){
   const track=$("sponsorTrack");
+
   const entries=Object.entries(sponsors||{}).map(([id,s])=>{
-    if(typeof s==="string")return {id,name:"Official Sponsor",image:"",link:s};
+    if(typeof s==="string"){
+      return {id,name:"Official Sponsor",image:"",link:s};
+    }
+
     return {
       id,
       name:s.name||"Official Sponsor",
@@ -466,24 +615,33 @@ function renderSponsors(){
 
   if(!entries.length){
     track.classList.remove("moving");
-    track.innerHTML='<div class="empty">Official sponsors will appear here.</div>';
+    track.innerHTML=
+      '<div class="empty">Official sponsors will appear here.</div>';
     return;
   }
 
   function card(s){
     const image=safeURL(s.image);
     const link=safeURL(s.link);
+
     const content=(image?
-      '<img src="'+esc(image)+'" alt="'+esc(s.name)+'" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">':"")+
+      '<img src="'+esc(image)+'" alt="'+esc(s.name)+
+      '" loading="lazy" referrerpolicy="no-referrer" '+
+      'onerror="this.style.display=\\'none\\'">':"")+
       '<strong>'+esc(s.name)+'</strong>'+
       (s.type?'<small>'+esc(s.type)+'</small>':"");
+
     return '<div class="sponsor-card">'+
-      (link?'<a href="'+esc(link)+'" target="_blank" rel="noopener noreferrer">'+content+'</a>':content)+
+      (link?
+        '<a href="'+esc(link)+
+        '" target="_blank" rel="noopener noreferrer">'+content+'</a>':
+        content)+
       '</div>';
   }
 
   const first=entries.map(card).join("");
   track.innerHTML=first+first;
+
   if(entries.length>1){
     track.classList.add("moving");
     track.style.setProperty("--duration",Math.max(18,entries.length*8)+"s");
@@ -506,13 +664,22 @@ function updateVoteStatus(){
   }
 
   const existing=todayVotes[currentUser.uid];
+
   if(existing){
-    setStatus("Your vote for today has already been recorded. Come back tomorrow.","success");
+    setStatus(
+      "Your vote for today has already been recorded. Come back tomorrow.",
+      "success"
+    );
     $("voteNote").textContent="Your account has already voted today.";
   }else{
-    setStatus("You are connected. Select one club and cast your vote.","success");
-    $("voteNote").textContent="One vote per signed-in account each day, using Nigeria time.";
+    setStatus(
+      "You are connected. Select one club and cast your vote.",
+      "success"
+    );
+    $("voteNote").textContent=
+      "One vote per signed-in account each day, using Nigeria time.";
   }
+
   updateVoteButton();
 }
 
@@ -524,6 +691,7 @@ $("clubSelect").addEventListener("change",()=>{
 
 $("voteButton").addEventListener("click",async()=>{
   if(!currentUser||!selectedClubId||voteInProgress)return;
+
   const club=clubs[selectedClubId];
   if(!club||!club.active)return;
 
@@ -545,6 +713,7 @@ $("voteButton").addEventListener("click",async()=>{
 
   try{
     const ref=db.ref("dailyVotes/"+dayKey+"/"+currentUser.uid);
+
     const result=await ref.transaction(existing=>{
       if(existing!==null)return;
       return vote;
@@ -552,13 +721,22 @@ $("voteButton").addEventListener("click",async()=>{
 
     if(result.committed){
       todayVotes[currentUser.uid]=vote;
-      setStatus("Your vote for "+club.name+" has been recorded. Thank you!","success");
+      setStatus(
+        "Your vote for "+club.name+" has been recorded. Thank you!",
+        "success"
+      );
     }else{
-      setStatus("A vote has already been recorded for your account today.","error");
+      setStatus(
+        "A vote has already been recorded for your account today.",
+        "error"
+      );
     }
   }catch(error){
     console.error(error);
-    setStatus("Your vote could not be submitted. Check your connection and try again.","error");
+    setStatus(
+      "Your vote could not be submitted. Check your connection and try again.",
+      "error"
+    );
   }finally{
     voteInProgress=false;
     $("voteButton").textContent="VOTE FOR MY CLUB";
@@ -575,7 +753,10 @@ function attachListeners(){
     renderHistory();
   },error=>{
     console.error(error);
-    setStatus("Could not load football clubs. Check the Firebase database rules.","error");
+    setStatus(
+      "Could not load football clubs. Check the Firebase database rules.",
+      "error"
+    );
   });
 
   db.ref("sponsors").on("value",snap=>{
@@ -583,7 +764,8 @@ function attachListeners(){
     renderSponsors();
   },error=>{
     console.error(error);
-    $("sponsorTrack").innerHTML='<div class="empty">Sponsors are temporarily unavailable.</div>';
+    $("sponsorTrack").innerHTML=
+      '<div class="empty">Sponsors are temporarily unavailable.</div>';
   });
 
   db.ref("dailyVotes/"+dayKey).on("value",snap=>{
@@ -592,7 +774,10 @@ function attachListeners(){
     updateVoteStatus();
   },error=>{
     console.error(error);
-    setStatus("Could not load today's votes. Check Firebase database rules.","error");
+    setStatus(
+      "Could not load today's votes. Check Firebase database rules.",
+      "error"
+    );
   });
 
   db.ref("dailyVotes").on("value",snap=>{
@@ -600,7 +785,8 @@ function attachListeners(){
     renderHistory();
   },error=>{
     console.error(error);
-    $("history").innerHTML='<div class="empty">Previous results are temporarily unavailable.</div>';
+    $("history").innerHTML=
+      '<div class="empty">Previous results are temporarily unavailable.</div>';
   });
 }
 
@@ -612,26 +798,35 @@ auth.onAuthStateChanged(user=>{
   }else{
     auth.signInAnonymously().catch(error=>{
       console.error(error);
-      setStatus("Unable to connect. Enable Anonymous Authentication in Firebase.","error");
+      setStatus(
+        "Unable to connect. Enable Anonymous Authentication in Firebase.",
+        "error"
+      );
     });
   }
 });
 
 setInterval(()=>{
   const newDay=getWATDayKey();
+
   if(newDay!==dayKey){
     dayKey=newDay;
     todayVotes={};
-    db.ref("dailyVotes/"+dayKey).once("value").then(snap=>{
-      todayVotes=snap.val()||{};
-      renderTopThree();
-      updateVoteStatus();
-    }).catch(console.error);
+
+    db.ref("dailyVotes/"+dayKey).once("value")
+      .then(snap=>{
+        todayVotes=snap.val()||{};
+        renderTopThree();
+        updateVoteStatus();
+      })
+      .catch(console.error);
   }
 },15000);
 
 db.ref(".info/connected").on("value",snap=>{
-  if(snap.val()===false)setStatus("Connection interrupted. Reconnecting...","error");
+  if(snap.val()===false){
+    setStatus("Connection interrupted. Reconnecting...","error");
+  }
 });
 </script>
 </body>
